@@ -36,8 +36,9 @@ import ij.WindowManager;
 import io.scif.img.ImgIOException;
 import listeners.ChooseOrigMap;
 import listeners.ChooseSegMap;
+import listeners.GoFreeFLListener;
+import listeners.GoMaskFLListener;
 import loadfile.CovistoOneChFileLoader;
-import net.imagej.updater.action.KeepAsIs;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
@@ -45,12 +46,6 @@ import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
-import pluginTools.FileChooser.CalTListener;
-import pluginTools.FileChooser.CalXListener;
-import pluginTools.FileChooser.CalYListener;
-import pluginTools.FileChooser.GreenDoneListener;
-import pluginTools.FileChooser.ImageObjects;
-import pluginTools.FileChooser.InputTListener;
 import pluginTools.simplifiedio.SimplifiedIO;
 import tracking.Trackobject;
 
@@ -247,7 +242,8 @@ public class FileChooser extends JPanel {
 
 		// Listeneres
 
-
+		FreeMode.addItemListener(new GoFreeFLListener(this));
+		MaskMode.addItemListener(new GoMaskFLListener(this));
 		segmentation.ChooseImage.addActionListener(new ChooseSegMap(this, segmentation.ChooseImage));
 
 		inputFieldcalX.addTextListener(new CalXListener());
