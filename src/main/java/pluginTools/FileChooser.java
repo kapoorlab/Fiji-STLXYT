@@ -55,7 +55,7 @@ public class FileChooser extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public JFrame Cardframe = new JFrame("XYZT Cell Tracker");
+	public JFrame Cardframe = new JFrame("Our Lab Plugin");
 	public JPanel panelCont = new JPanel();
 	public JPanel Panelfileoriginal = new JPanel();
 	public ImagePlus impOrig, impSeg, impMask;
@@ -76,7 +76,7 @@ public class FileChooser extends JPanel {
 	public JComboBox<String> ChooseImage;
 	public JComboBox<String> ChoosesuperImage;
 	public JComboBox<String> ChooseoriginalImage;
-	public JButton Done = new JButton("Collect Cells and Start Tracker");
+	public JButton Done = new JButton("Collect Cells and Start Computing");
 	public HashMap<Integer, ArrayList<Trackobject>> CSVFileInfo = new HashMap<Integer, ArrayList<Trackobject>>(); 
 	
 	public String chooseCellSegstring = "2D + time Segmentation for Cells";
@@ -113,7 +113,7 @@ public class FileChooser extends JPanel {
 			new EmptyBorder(c.insets));
 	public boolean DoMask = false;
 	public boolean NoMask = true;
-	public JButton Checkpointbutton = new JButton("Load Cells From CSV");
+	public JButton Checkpointbutton = new JButton("Data from CSV");
 	public CheckboxGroup cellmode = new CheckboxGroup();
 	public Checkbox FreeMode = new Checkbox("No Mask", NoMask, cellmode);
 	public Checkbox MaskMode = new Checkbox("With Mask", DoMask, cellmode);
@@ -364,13 +364,16 @@ public class FileChooser extends JPanel {
 
 	
 
+		
 		if (imageOrig.numDimensions() > 4) {
 
 			JOptionPane.showMessageDialog(new JFrame(),
 					"This tracker is for 3D + time images only, your image has higher dimensionality, split the channels perhaps?");
 
 		}
-	
+		imageSeg = SimplifiedIO.openImage(
+      			impSeg.getOriginalFileInfo().directory + impSeg.getOriginalFileInfo().fileName,
+				new IntType());
 
 		
 		if (DoMask) {
@@ -424,28 +427,23 @@ public class FileChooser extends JPanel {
 			
 			if(imageSeg!=null) {
 				
-				
-				
-				ImageObjects ImagePairs  = 
-    					KeepMaskRegion(imageOrig, imageSeg, imageSeg);
 			
 			
-			InteractiveAnalysis CellCollection = new InteractiveAnalysis(ImagePairs.imageOrig, ImagePairs.imageSeg,CSVFileInfo, new File(impOrig.getOriginalFileInfo().directory), impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY,
+			InteractiveAnalysis CellCollection = new InteractiveAnalysis(imageOrig, imageSeg,CSVFileInfo, new File(impOrig.getOriginalFileInfo().directory), impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY,
 					FrameInterval, name);
 			
-
 			CellCollection.run(null);
 
 			jpb = CellCollection.jpb;
+			
 			
 			}
 			
 			else if (CSVFileInfo!=null && CSVFileInfo.size() > 0) {
 				
-				ImageObjects ImagePairs  = 
-    					KeepMaskRegion(imageOrig, imageSeg, imageSeg);
 				
-				InteractiveAnalysis CellCollection = new InteractiveAnalysis(ImagePairs.imageOrig, null, CSVFileInfo, new File(impOrig.getOriginalFileInfo().directory), impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY,
+				
+				InteractiveAnalysis CellCollection = new InteractiveAnalysis(imageOrig, null, CSVFileInfo, new File(impOrig.getOriginalFileInfo().directory), impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY,
 						FrameInterval, name);
 				
 

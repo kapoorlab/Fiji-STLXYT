@@ -32,9 +32,7 @@ public class ChooseSegMap implements ActionListener {
 		String imagename = (String) choice.getSelectedItem();
       	parent.impSeg = WindowManager.getImage(imagename);
     	
-      	parent.imageSeg = SimplifiedIO.openImage(
-      			parent.impSeg.getOriginalFileInfo().directory + parent.impSeg.getOriginalFileInfo().fileName,
-				new IntType());
+      	
 	
 
 	}

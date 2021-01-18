@@ -240,7 +240,6 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 		pixellist = new HashSet<Integer>();
 		ij = new ImageJ();
 		ij.ui().showUI();
-		if (ndims == 3) {
 
 			thirdDimension = 1;
 
@@ -259,14 +258,11 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 			imp = ImageJFunctions.show(CurrentView, "Original Image");
 			imp.setTitle("Active Image" + " " + "time point : " + thirdDimension);
 
-			if (Analysis) {
 
 				StartDisplayer();
 				Card();
 
-			}
 
-		}
 
 		
 		Cardframe.repaint();
@@ -495,11 +491,11 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 
 		}
 
-		autoTstart = new Label("Start time for tracking");
+		autoTstart = new Label("Start time for computing");
 		startT = new TextField(textwidth);
 		startT.setText(Integer.toString(AutostartTime));
 
-		autoTend = new Label("End time for tracking");
+		autoTend = new Label("End time for computing");
 		endT = new TextField(textwidth);
 		endT.setText(Integer.toString(AutoendTime));
 
