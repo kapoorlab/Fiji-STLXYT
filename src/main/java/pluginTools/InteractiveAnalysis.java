@@ -43,6 +43,7 @@ import javax.swing.table.JTableHeader;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import functionPanel.CovistoFunctionPanel;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
@@ -150,7 +151,7 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 	public RandomAccessibleInterval<IntType> SegYelloworiginalimg;
 	public RandomAccessibleInterval<IntType> SegRedoriginalimg;
 	public RandomAccessibleInterval<IntType> SegGreenoriginalimg;
-	public TrackobjectCollection cells = new TrackobjectCollection();
+	//public TrackobjectCollection cells = new TrackobjectCollection();
 	public HashMap<Integer, Integer> IDlist = new HashMap<Integer, Integer>();
 	public HashMap<String, Trackobject> Finalresult;
 	// Input  and its segmentation
@@ -337,9 +338,9 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 		
 		
 		
-		ComputeFunction display = new ComputeFunction(this, jpb);
+		//ComputeFunction display = new ComputeFunction(this, jpb);
 
-		display.execute();
+		//display.execute();
 	}
 
 
@@ -381,7 +382,7 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 	public JPanel Original = new JPanel();
 	public JPanel PanelSelectFile = new JPanel();
 	public JPanel Timeselect = new JPanel();
-	public JPanel KalmanPanel = new JPanel();
+	public JPanel FunctionPanel = new JPanel();
 	public JPanel panelCont = new JPanel();
 	public final Insets insets = new Insets(10, 0, 0, 0);
 	public final GridBagLayout layout = new GridBagLayout();
@@ -539,9 +540,9 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 		panelFirst.add(Timeselect, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.EAST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
-		KalmanPanel = CovistoKalmanPanel.KalmanPanel();
+		FunctionPanel = CovistoFunctionPanel.FunctionPanel();
 
-		panelFirst.add(KalmanPanel, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.EAST,
+		panelFirst.add(FunctionPanel, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.EAST,
 				GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
 
 
@@ -581,8 +582,8 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 		endT.addTextListener(new AutoEndListener(this));
 		startT.addTextListener(new AutoStartListener(this));
 		
-		KalmanPanel.validate();
-		KalmanPanel.repaint();
+		FunctionPanel.validate();
+		FunctionPanel.repaint();
 
 		panelFirst.setVisible(true);
 		cl.show(panelCont, "1");
