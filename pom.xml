@@ -10,13 +10,13 @@
 	</parent>
 
 	<groupId>net.kapoor</groupId>
-	<artifactId>BTrack</artifactId>
+	<artifactId>Fiji-STLXYT</artifactId>
 	<version>1.0.0</version>
 	
-	<name>Cell tracking inside buds</name>
-	<description>Track cells and measure bud properties, using track visualization tools of mastadon.</description>
-	<url>https://github.com/kapoorlab/BTrack</url>
-	<inceptionYear>2017</inceptionYear>
+	<name>XYT image analysis</name>
+	<description>Standard template library for Fiji plugins for XYT.</description>
+	<url>https://github.com/kapoorlab/Fiji-STLXYT</url>
+	<inceptionYear>2020</inceptionYear>
 	<organization>
 		<name>Kapoor Lab</name>
 		<url>https://science.institut-curie.org/platforms/cell-and-tissue-imaging/photonics/contacts</url>
