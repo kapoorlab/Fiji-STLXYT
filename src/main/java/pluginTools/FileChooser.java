@@ -87,7 +87,7 @@ public class FileChooser extends JPanel {
 	public JButton Done = new JButton("Collect Cells and Start Computing");
 	public HashMap<Integer, ArrayList<BCellobject>> CSVFileInfo = new HashMap<Integer, ArrayList<BCellobject>>(); 
 	
-	public String chooseCellSegstring = "2D + time Segmentation for Cells";
+	public String chooseCellSegstring = "2D + time Segmentation Image";
 	public Border chooseCellSeg = new CompoundBorder(new TitledBorder(chooseCellSegstring), new EmptyBorder(c.insets));
     
 	public String chooseTMstring = "TrackMate or Non TrackMate Analysis";
@@ -109,7 +109,7 @@ public class FileChooser extends JPanel {
 	public RandomAccessibleInterval<IntType> imageSeg;
 	
 	
-	public String chooseoriginalCellfilestring = "Cells are tracked inside a region";
+	public String chooseoriginalCellfilestring = "Computation is done inside a mask region/whole image";
 	public Border chooseoriginalCellfile = new CompoundBorder(new TitledBorder(chooseoriginalCellfilestring),
 			new EmptyBorder(c.insets));
 
@@ -146,8 +146,8 @@ public class FileChooser extends JPanel {
 	public Checkbox NonTrackMateMode = new Checkbox("Other Lab Specific Analysis", DoNotTrackMate, trackmatemode);
 	
 	public CheckboxGroup filamentmode = new CheckboxGroup();
-	public Checkbox FilamentTrackMateMode = new Checkbox("Analysis for Filaments", FilamentTrackMate, filamentmode);
-	public Checkbox NonFilamentTrackMateMode = new Checkbox("Analysis for Cells", NotFilamentTrackMate, filamentmode);
+	public Checkbox FilamentTrackMateMode = new Checkbox("BTrackMate for Filaments", FilamentTrackMate, filamentmode);
+	public Checkbox NonFilamentTrackMateMode = new Checkbox("BTrackMate for Cells", NotFilamentTrackMate, filamentmode);
 	
 	public FileChooser() {
 
@@ -254,17 +254,17 @@ public class FileChooser extends JPanel {
 		Microscope.add(inputFieldcalY, new GridBagConstraints(3, 1, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.RELATIVE, insets, 0, 0));
 
-		Microscope.add(inputLabelcalT, new GridBagConstraints(3, 4, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+		Microscope.add(inputLabelcalT, new GridBagConstraints(0, 4, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.RELATIVE, insets, 0, 0));
 
-		Microscope.add(FieldinputLabelcalT, new GridBagConstraints(3, 5, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
+		Microscope.add(FieldinputLabelcalT, new GridBagConstraints(0, 5, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.RELATIVE, insets, 0, 0));
 		
-		Microscope.add(inputT, new GridBagConstraints(0, 8, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
-				GridBagConstraints.RELATIVE, insets, 0, 0));
+		//Microscope.add(inputT, new GridBagConstraints(0, 8, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+		//		GridBagConstraints.RELATIVE, insets, 0, 0));
 
-		Microscope.add(inputFieldT, new GridBagConstraints(0, 9, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
-				GridBagConstraints.RELATIVE, insets, 0, 0));
+		//Microscope.add(inputFieldT, new GridBagConstraints(0, 9, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
+		//		GridBagConstraints.RELATIVE, insets, 0, 0));
 
 		Microscope.setBorder(microborder);
 		

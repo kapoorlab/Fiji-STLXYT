@@ -12,7 +12,7 @@ public class GoTMListener implements ItemListener {
 	
 	public GoTMListener(FileChooser parent) {
 		
-		parent = this.parent;
+		this.parent = parent;
 		
 	}
 
