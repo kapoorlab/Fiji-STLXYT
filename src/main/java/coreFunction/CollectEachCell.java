@@ -18,7 +18,10 @@ import net.imglib2.type.logic.BitType;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.view.Views;
 import pluginTools.InteractiveAnalysis;
+import tracking.BCellobject;
 import tracking.Cellobject;
+import tracking.Regionobject;
+import utility.Distance;
 import utility.GetNearest;
 
 public class CollectEachCell  implements Runnable {
@@ -76,43 +79,34 @@ public class CollectEachCell  implements Runnable {
 
 		}
 		
-		public void Common(Budregionobject  PairCurrentViewBit,
+		public void Common(Regionobject  PairCurrentViewBit,
 				List<RealLocalizable> truths, RealLocalizable centerpoint, String uniqueID,
 				int label) {
 
 			
-			// Corner points of region
-					OpService ops = parent.ij.op();
-					
-			List<RealLocalizable> skeletonEndPoints = GetCorner(PairCurrentViewBit, ops);
+			// If we are analzing cells just collect them and create trackmate model
+			if(parent.FilamentMode == false) {
 			
-
-			Budobject Curreentbud = new Budobject(centerpoint, truths, skeletonEndPoints, parent.fourthDimension, label,
-					truths.size() * parent.calibrationX);
 			Celllist  = GetNearest.getAllInterior3DCells(parent,  parent.CurrentViewYellowInt);
-
-		      
-		      
 	     	for(Cellobject currentbudcell:Celllist) {
-				
-				
-				Localizable centercell = currentbudcell.Location;
-				
-				RealLocalizable closestskel = GetNearest.getNearestskelPoint(truths, centercell);
-				// and the distance
-				double closestBudPoint = 0;
-				if(closestskel!=null)
-					closestBudPoint = Distance.DistanceSqrt(centercell, closestskel);
-				// Make the bud n cell object, each cell has all information about the bud n itself 
-				BCellobject budncell = new BCellobject(Curreentbud, new ArrayList<Budpointobject>(), currentbudcell, closestBudPoint, closestBudPoint, parent.fourthDimension);
-	            parent.budcells.add(budncell, parent.fourthDimension);  
+				BCellobject budncell = new BCellobject(currentbudcell, parent.thirdDimension);
+	            parent.cells.add(budncell, parent.thirdDimension);  
 			}
+			}
+			
+			// If we are analyzing filaments/microtubules get the end points and create trackmatre model
+			if(parent.FilamentMode == true) {
+				
+				
+				
+			}
+			
 			
 		}
 
 
 
-		public static ArrayList<RealLocalizable> GetCorner(Budregionobject PairCurrentViewBit,
+		public static ArrayList<RealLocalizable> GetCorner(Regionobject PairCurrentViewBit,
 				OpService ops) {
 
 			ArrayList<RealLocalizable> endPoints = new ArrayList<RealLocalizable>();
@@ -187,7 +181,7 @@ public class CollectEachCell  implements Runnable {
 			return gradientimg;
 		}
 
-		public static Budregionobject BudCurrentLabelBinaryImage(
+		public static Regionobject BudCurrentLabelBinaryImage(
 				RandomAccessibleInterval<IntType> Intimg, int currentLabel) {
 			int n = Intimg.numDimensions();
 			long[] position = new long[n];
@@ -232,7 +226,7 @@ public class CollectEachCell  implements Runnable {
 			
 			
 			
-			Budregionobject region = new Budregionobject(gradimg, outimg, min,  size);
+			Regionobject region = new Regionobject(gradimg, outimg, min,  size);
 			return region;
 
 		}

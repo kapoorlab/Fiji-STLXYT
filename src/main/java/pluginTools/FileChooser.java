@@ -36,6 +36,8 @@ import ij.WindowManager;
 import io.scif.img.ImgIOException;
 import listeners.ChooseOrigMap;
 import listeners.ChooseSegMap;
+import listeners.GoCellListener;
+import listeners.GoFilamentListener;
 import listeners.GoFreeFLListener;
 import listeners.GoMaskFLListener;
 import listeners.GoNoTMListener;
@@ -60,6 +62,10 @@ public class FileChooser extends JPanel {
 	public JFrame Cardframe = new JFrame("Our Lab Plugin");
 	public JPanel panelCont = new JPanel();
 	public JPanel Panelfileoriginal = new JPanel();
+	
+	public JPanel PanelTM = new JPanel();
+	public JPanel PanelFilament = new JPanel();
+	
 	public ImagePlus impOrig, impSeg, impMask;
 	
 	public File impOrigfile;
@@ -84,6 +90,12 @@ public class FileChooser extends JPanel {
 	public String chooseCellSegstring = "2D + time Segmentation for Cells";
 	public Border chooseCellSeg = new CompoundBorder(new TitledBorder(chooseCellSegstring), new EmptyBorder(c.insets));
     
+	public String chooseTMstring = "TrackMate or Non TrackMate Analysis";
+	public Border chooseTM = new CompoundBorder(new TitledBorder(chooseTMstring), new EmptyBorder(c.insets));
+	
+	public String chooseFilamentstring = "Filament/Rod or Cell Analysis";
+	public Border chooseFilament = new CompoundBorder(new TitledBorder(chooseFilamentstring), new EmptyBorder(c.insets));
+	
 	public String chooseMaskSegstring = "Segmentation for Cells and  Mask";
 	public Border chooseMaskSeg = new CompoundBorder(new TitledBorder(chooseMaskSegstring), new EmptyBorder(c.insets));
 	public JProgressBar jpb = new JProgressBar();
@@ -104,7 +116,7 @@ public class FileChooser extends JPanel {
 	public String donestring = "Done Selection";
 	public Border LoadBtrack = new CompoundBorder(new TitledBorder(donestring), new EmptyBorder(c.insets));
 
-	public Label inputLabelcalX, inputLabelcalY, inputLabelcalZ, inputLabelcalT;
+	public Label inputLabelcalX, inputLabelcalY, inputLabelcalT;
 	public double calibrationX, calibrationY, FrameInterval, TimeTotal;
 	
 	public Label inputZ, inputT;
@@ -129,15 +141,13 @@ public class FileChooser extends JPanel {
 	public Checkbox FreeMode = new Checkbox("No Mask", NoMask, cellmode);
 	public Checkbox MaskMode = new Checkbox("With Mask", DoMask, cellmode);
 
-	public Boolean TrackMate = true;
 	public CheckboxGroup trackmatemode = new CheckboxGroup();
 	public Checkbox TrackMateMode = new Checkbox("TrackMate Style Analysis", DoTrackMate, trackmatemode);
-	public Checkbox NonTrackMateMode = new Checkbox("With Mask", DoNotTrackMate, trackmatemode);
+	public Checkbox NonTrackMateMode = new Checkbox("Other Lab Specific Analysis", DoNotTrackMate, trackmatemode);
 	
-	public Boolean Filament = true;
 	public CheckboxGroup filamentmode = new CheckboxGroup();
-	public Checkbox FilamentTrackMateMode = new Checkbox("I am a Filament", FilamentTrackMate, filamentmode);
-	public Checkbox NonFilamentTrackMateMode = new Checkbox("I am a Cell", NotFilamentTrackMate, filamentmode);
+	public Checkbox FilamentTrackMateMode = new Checkbox("Analysis for Filaments", FilamentTrackMate, filamentmode);
+	public Checkbox NonFilamentTrackMateMode = new Checkbox("Analysis for Cells", NotFilamentTrackMate, filamentmode);
 	
 	public FileChooser() {
 
@@ -185,31 +195,39 @@ public class FileChooser extends JPanel {
 
 		Panelfileoriginal = original.SingleChannelOption();
 
-		panelFirst.add(TrackMateMode, new GridBagConstraints(0, 1, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+		PanelTM.add(TrackMateMode, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
-		panelFirst.add(NonTrackMateMode, new GridBagConstraints(1, 1, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+		PanelTM.add(NonTrackMateMode, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
-		
-		
-		panelFirst.add(FilamentTrackMateMode, new GridBagConstraints(0, 1, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
-				GridBagConstraints.HORIZONTAL, insets, 0, 0));
-		panelFirst.add(NonFilamentTrackMateMode, new GridBagConstraints(1, 1, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+		PanelTM.setBorder(chooseTM);
+
+		panelFirst.add(PanelTM, new GridBagConstraints(0, 1, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 		
-		panelFirst.add(Panelfileoriginal, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+		
+		PanelFilament.add(FilamentTrackMateMode, new GridBagConstraints(0, 1, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.HORIZONTAL, insets, 0, 0));
+		PanelFilament.add(NonFilamentTrackMateMode, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.HORIZONTAL, insets, 0, 0));
+		PanelFilament.setBorder(chooseFilament);
+		
+		panelFirst.add(PanelFilament, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.HORIZONTAL, insets, 0, 0));
+		
+		panelFirst.add(Panelfileoriginal, new GridBagConstraints(0, 3, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
 		original.ChooseImage.addActionListener(new ChooseOrigMap(this, original.ChooseImage));
 
-		panelFirst.add(FreeMode, new GridBagConstraints(0, 3, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+		panelFirst.add(FreeMode, new GridBagConstraints(0, 4, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
-		panelFirst.add(MaskMode, new GridBagConstraints(0, 4, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+		panelFirst.add(MaskMode, new GridBagConstraints(0, 5, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
 		CovistoOneChFileLoader segmentation = new CovistoOneChFileLoader(chooseCellSegstring, blankimageNames);
 		Panelfile = segmentation.SingleChannelOption();
 
-		panelFirst.add(Panelfile, new GridBagConstraints(0, 5, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+		panelFirst.add(Panelfile, new GridBagConstraints(0, 6, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
 		
@@ -262,6 +280,10 @@ public class FileChooser extends JPanel {
 		
 		TrackMateMode.addItemListener(new GoTMListener(this));
 		NonTrackMateMode.addItemListener(new GoNoTMListener(this));
+		
+		FilamentTrackMateMode.addItemListener(new GoFilamentListener(this));
+		NonFilamentTrackMateMode.addItemListener(new GoCellListener(this));
+		
 		
 		segmentation.ChooseImage.addActionListener(new ChooseSegMap(this, segmentation.ChooseImage));
 
@@ -387,7 +409,7 @@ public class FileChooser extends JPanel {
 			
 			InteractiveAnalysis CellCollection = new InteractiveAnalysis(ImagePairs.imageOrig, ImagePairs.imageSeg,CSVFileInfo, new File(impOrig.getOriginalFileInfo().directory), 
 					impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY,
-					FrameInterval, name, TrackMate);
+					FrameInterval, name, DoTrackMate, FilamentTrackMate);
 			
 			
 
@@ -403,7 +425,7 @@ public class FileChooser extends JPanel {
     			
     			InteractiveAnalysis CellCollection = new InteractiveAnalysis(imageOrig,null,CSVFileInfo, new File(impOrig.getOriginalFileInfo().directory), 
     					impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY,
-    					FrameInterval, name, TrackMate);
+    					FrameInterval, name, DoTrackMate, FilamentTrackMate);
     			
 
     			CellCollection.run(null);
@@ -424,7 +446,7 @@ public class FileChooser extends JPanel {
 			
 			
 			InteractiveAnalysis CellCollection = new InteractiveAnalysis(imageOrig, imageSeg,CSVFileInfo, new File(impOrig.getOriginalFileInfo().directory), impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY,
-					FrameInterval, name, TrackMate);
+					FrameInterval, name, DoTrackMate, FilamentTrackMate);
 			
 			CellCollection.run(null);
 
@@ -438,7 +460,7 @@ public class FileChooser extends JPanel {
 				
 				
 				InteractiveAnalysis CellCollection = new InteractiveAnalysis(imageOrig, null, CSVFileInfo, new File(impOrig.getOriginalFileInfo().directory), impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY,
-						FrameInterval, name, TrackMate);
+						FrameInterval, name, DoTrackMate, FilamentTrackMate);
 				
 
 				CellCollection.run(null);

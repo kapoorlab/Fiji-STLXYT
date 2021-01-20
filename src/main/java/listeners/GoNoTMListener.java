@@ -17,10 +17,23 @@ public class GoNoTMListener implements ItemListener {
 	}
 
 	@Override
-	public void itemStateChanged(ItemEvent arg0) {
+	public void itemStateChanged(ItemEvent e) {
 		
-		parent.TrackMate = false;
+	if (e.getStateChange() == ItemEvent.SELECTED) {
 		
+			
+			parent.DoTrackMate = false;
+		    parent.DoNotTrackMate = true;
+		}
+		
+	
+if (e.getStateChange() == ItemEvent.DESELECTED) {
+	
+		
+		parent.DoTrackMate = true;
+		parent.DoNotTrackMate = false;
+	
+	}
 	}
 
 }

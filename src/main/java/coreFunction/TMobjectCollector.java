@@ -41,7 +41,7 @@ public class TMobjectCollector {
 			parent.ZTRois = new ArrayList<int[]>();
 			parent.updatePreview(ValueChange.THIRDDIMmouse);
 
-			ColelctEachCell compute = new CollectEachCell(parent, percent);
+			CollectEachCell compute = new CollectEachCell(parent, percent);
 			compute.displayCells();
 
 			percent++;

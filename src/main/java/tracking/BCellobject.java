@@ -11,6 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import Buddy.plugin.trackmate.Dimension;
 import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.Localizable;
+import net.imglib2.Point;
 import net.imglib2.RealLocalizable;
 
 	
@@ -175,22 +176,34 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 			FEATURES.add( STARTPOSITION_X );
 			FEATURES.add( STARTPOSITION_Y );
 			
+			FEATURES.add( ENDPOSITION_X );
+			FEATURES.add( ENDPOSITION_Y );
+			
 			FEATURES.add( POSITION_T );
 			FEATURES.add( Radi_X );
 			FEATURES.add( Radi_Y );
 			FEATURES.add( INTENSITY );
 			FEATURES.add( Size );
 			
-			FEATURE_NAMES.put( STARTPOSITION_X, "X" );
-			FEATURE_NAMES.put( STARTPOSITION_Y, "Y" );
+			FEATURE_NAMES.put( STARTPOSITION_X, "StartX" );
+			FEATURE_NAMES.put( STARTPOSITION_Y, "StartY" );
+			
+			FEATURE_NAMES.put( ENDPOSITION_X, "EndX" );
+			FEATURE_NAMES.put( ENDPOSITION_Y, "EndY" );
 			FEATURE_NAMES.put( POSITION_T, "T" );
+
 			FEATURE_NAMES.put( Radi_X, "Radi_X" );
 			FEATURE_NAMES.put( Radi_Y, "Radi_Y" );
 			FEATURE_NAMES.put( INTENSITY, "Intensity" );
 			FEATURE_NAMES.put( Size, "Size" );
 			
-			FEATURE_SHORT_NAMES.put( STARTPOSITION_X, "X" );
-			FEATURE_SHORT_NAMES.put( STARTPOSITION_Y, "Y" );
+			FEATURE_SHORT_NAMES.put( STARTPOSITION_X, "StartX" );
+			FEATURE_SHORT_NAMES.put( STARTPOSITION_Y, "StartY" );
+			
+			FEATURE_SHORT_NAMES.put( STARTPOSITION_X, "EndX" );
+			FEATURE_SHORT_NAMES.put( STARTPOSITION_Y, "EndY" );
+			
+			
 			FEATURE_SHORT_NAMES.put( POSITION_T, "T" );
 			FEATURE_SHORT_NAMES.put( Radi_X, "Radi_X" );
 			FEATURE_SHORT_NAMES.put( Radi_Y, "Radi_Y" );
@@ -199,6 +212,9 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 			
 			FEATURE_DIMENSIONS.put( STARTPOSITION_X, Dimension.POSITION );
 			FEATURE_DIMENSIONS.put( STARTPOSITION_Y, Dimension.POSITION );
+			FEATURE_DIMENSIONS.put( ENDPOSITION_X, Dimension.POSITION );
+			FEATURE_DIMENSIONS.put( ENDPOSITION_Y, Dimension.POSITION );
+			
 			FEATURE_DIMENSIONS.put( POSITION_T, Dimension.TIME );
 			FEATURE_DIMENSIONS.put( Radi_X, Dimension.LENGTH );
 			FEATURE_DIMENSIONS.put( Radi_Y, Dimension.LENGTH );
@@ -207,6 +223,10 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 			
 			IS_INT.put( STARTPOSITION_X, Boolean.FALSE );
 			IS_INT.put( STARTPOSITION_Y, Boolean.FALSE );
+			
+			IS_INT.put( ENDPOSITION_X, Boolean.FALSE );
+			IS_INT.put( ENDPOSITION_Y, Boolean.FALSE );
+			
 			IS_INT.put( POSITION_T, Boolean.FALSE );
 			IS_INT.put( Radi_X, Boolean.FALSE );
 			IS_INT.put( Radi_Y, Boolean.FALSE );
@@ -252,12 +272,12 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 
 		@Override
 		public float getFloatPosition(int d) {
-			return (float) currentcell.Location.getFloatPosition(d);
+			return (float) 0.5 *( currentcell.StartLocation.getFloatPosition(d) + currentcell.EndLocation.getFloatPosition(d));
 		}
 
 		@Override
 		public double getDoublePosition(int d) {
-			return currentcell.Location.getDoublePosition(d);
+			return 0.5 * (currentcell.StartLocation.getDoublePosition(d) + currentcell.EndLocation.getDoublePosition(d)) ;
 		}
 		
 		/**
@@ -272,8 +292,8 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		 */
 		public double diffTo(final BCellobject target, int n) {
 
-			final double thisBloblocation = currentcell.Location.getDoublePosition(n);
-			final double targetBloblocation = target.currentcell.Location.getDoublePosition(n);
+			final double thisBloblocation = 0.5 * (currentcell.StartLocation.getDoublePosition(n) + currentcell.EndLocation.getDoublePosition(n));
+			final double targetBloblocation = 0.5 * (target.currentcell.StartLocation.getDoublePosition(n) + target.currentcell.EndLocation.getDoublePosition(n));
 			return thisBloblocation - targetBloblocation;
 		}
 		/**
@@ -335,11 +355,36 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		 * @return the distance to the current cloud to target cloud specified.
 		 */
 
+		public Localizable add(Localizable source, Localizable target) {
+			
+			assert source.numDimensions() == target.numDimensions();
+			
+			long [] Added = new long[source.numDimensions()];
+			
+			for(int d = 0; d < source.numDimensions(); ++d) {
+				
+				Added[d] = (long)(0.5 * (source.getDoublePosition(d) + target.getDoublePosition(d)));
+				
+			}
+			
+			Point addedPoint = new Point(Added);
+			
+			return addedPoint;
+		}
+		
 		public double squareDistanceTo(BCellobject target) {
 			// Returns squared distance between the source Blob and the target Blob.
 
-			final Localizable sourceLocation = currentcell.Location;
-			final Localizable targetLocation = target.currentcell.Location;
+			final Localizable sourceLocationStart = currentcell.StartLocation;
+			final Localizable sourceLocationEnd = currentcell.EndLocation;
+			
+			
+			final Localizable targetLocationStart = target.currentcell.StartLocation;
+			final Localizable targetLocationEnd = target.currentcell.EndLocation;
+			
+			final Localizable sourceLocation = add(sourceLocationStart, sourceLocationEnd);
+			final Localizable targetLocation = add(targetLocationStart, targetLocationEnd);
+			
 			double distance = 0;
 			
 			for (int d = 0; d < sourceLocation.numDimensions(); ++d) {
@@ -352,8 +397,15 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		public double DistanceTo(BCellobject target, final double alpha, final double beta) {
 			// Returns squared distance between the source Blob and the target Blob.
 
-			final Localizable sourceLocation = currentcell.Location;
-			final Localizable targetLocation = target.currentcell.Location;
+			final Localizable sourceLocationStart = currentcell.StartLocation;
+			final Localizable sourceLocationEnd = currentcell.EndLocation;
+			
+			
+			final Localizable targetLocationStart = target.currentcell.StartLocation;
+			final Localizable targetLocationEnd = target.currentcell.EndLocation;
+			
+			final Localizable sourceLocation = add(sourceLocationStart, sourceLocationEnd);
+			final Localizable targetLocation = add(targetLocationStart, targetLocationEnd);
 
 			double distance = 0;
 

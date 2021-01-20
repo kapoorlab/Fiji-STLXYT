@@ -43,6 +43,7 @@ import javax.swing.table.JTableHeader;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import Buddy.plugin.trackmate.BCellobjectCollection;
 import coreFunction.BackgroundTMFunction;
 import functionPanel.CovistoFunctionPanel;
 import ij.IJ;
@@ -152,7 +153,7 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 	public RandomAccessibleInterval<IntType> SegYelloworiginalimg;
 	public RandomAccessibleInterval<IntType> SegRedoriginalimg;
 	public RandomAccessibleInterval<IntType> SegGreenoriginalimg;
-	//public TrackobjectCollection cells = new TrackobjectCollection();
+	public BCellobjectCollection cells = new BCellobjectCollection();
 	public HashMap<Integer, Integer> IDlist = new HashMap<Integer, Integer>();
 	public HashMap<String, BCellobject> Finalresult;
 	public final Boolean TrackMate;

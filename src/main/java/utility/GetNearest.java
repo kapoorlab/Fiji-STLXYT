@@ -33,7 +33,7 @@ import tracking.Cellobject;
 public class GetNearest {
 	public static ArrayList<Cellobject> getLabelInteriorCells(InteractiveAnalysis parent,
 			final RandomAccessibleInterval<IntType> CurrentViewInt, ArrayList<Cellobject> InteriorCells,
-			Budobject Currentbud, int currentlabel) {
+			 int currentlabel) {
 
 		ArrayList<Cellobject> AllLabelcells = new ArrayList<Cellobject>();
 
@@ -41,7 +41,7 @@ public class GetNearest {
 
 		for (Cellobject currentcell : InteriorCells) {
 
-			Localizable cellcenter = currentcell.Location;
+			Localizable cellcenter = currentcell.StartLocation;
 			intranac.setPosition(cellcenter);
 			int label = intranac.get().get();
 
@@ -178,7 +178,7 @@ public class GetNearest {
 		ArrayList<Cellobject> Allcells = new ArrayList<Cellobject>();
 		HashMap<Integer, Boolean> InsideCellList = new HashMap<Integer, Boolean>();
 
-		if(parent.CSVGreen.get(parent.fourthDimension)==null) {
+		if(parent.CSVInfoFile.get(parent.thirdDimension)==null) {
 			
 			Cursor<IntType> intcursor = Views.iterable(GreenCellSeg).localizingCursor();
 			
