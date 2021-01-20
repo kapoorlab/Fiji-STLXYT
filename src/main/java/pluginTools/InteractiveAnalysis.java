@@ -43,7 +43,7 @@ import javax.swing.table.JTableHeader;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.xy.XYSeriesCollection;
 
-import Buddy.plugin.trackmate.BCellobjectCollection;
+import TrackBuddy.plugin.trackmate.BCellobjectCollection;
 import coreFunction.BackgroundTMFunction;
 import functionPanel.CovistoFunctionPanel;
 import ij.IJ;

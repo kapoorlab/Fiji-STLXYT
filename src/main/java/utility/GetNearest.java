@@ -135,7 +135,7 @@ public class GetNearest {
 			Boolean isInterior = InsideCellList.get(labelyellow);
 
 			if (isInterior) {
-				Budregionobject PairCurrentViewBit = TrackEachBud.BudCurrentLabelBinaryImage(CurrentViewYellowInt,
+				Regionobject PairCurrentViewBit = TrackEachBud.BudCurrentLabelBinaryImage(CurrentViewYellowInt,
 						labelyellow);
 
 				// For each bud get the list of points

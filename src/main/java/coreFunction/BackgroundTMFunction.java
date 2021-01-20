@@ -3,7 +3,7 @@ package coreFunction;
 import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 
-import Buddy.plugin.trackmate.TrackMatePlugIn_;
+import TrackBuddy.plugin.trackmate.TrackMatePlugIn_;
 import pluginTools.InteractiveAnalysis;
 
 public class BackgroundTMFunction extends SwingWorker<Void, Void> {
