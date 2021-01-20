@@ -43,7 +43,6 @@ public class ChooseOrigMap implements ActionListener {
     			
     		parent.calibrationX = parent.impOrig.getCalibration().pixelWidth;
 			parent.calibrationY = parent.impOrig.getCalibration().pixelHeight;
-			parent.calibrationZ = parent.impOrig.getCalibration().pixelDepth;
 			parent.FrameInterval = parent.impOrig.getCalibration().frameInterval;
 			parent.TimeTotal = parent.imageOrig.dimension(3);
 			
@@ -57,7 +56,6 @@ public class ChooseOrigMap implements ActionListener {
 			parent.FieldinputLabelcalT.setText(String.valueOf(df.format(parent.FrameInterval))); 
 			parent.inputFieldcalX.setText(String.valueOf(df.format(parent.calibrationX)));
 			parent.inputFieldcalY.setText(String.valueOf(df.format(parent.calibrationY)));
-			parent.inputFieldcalZ.setText(String.valueOf(df.format(parent.calibrationZ)));
 			parent.inputFieldT.setText(String.valueOf(df.format(parent.TimeTotal)));
 	}
  

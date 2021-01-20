@@ -17,16 +17,7 @@ public class Slicer {
 		long[] dim = { originalimg.dimension(0), originalimg.dimension(1) };
 		final ImgFactory<T> factory = net.imglib2.util.Util.getArrayOrCellImgFactory(originalimg, type);
 		RandomAccessibleInterval<T> totalimg = factory.create(dim, type);
-		if (thirdDimensionSize == 0) {
-
-			totalimg = originalimg;
-		}
-		else {
-			totalimg = Views.hyperSlice(originalimg,originalimg.numDimensions() - 1 , thirdDimension - 1);
-
-			
-		}
-
+		totalimg = Views.hyperSlice(originalimg,originalimg.numDimensions() - 1 , thirdDimension - 1);
 		return totalimg;
 
 	}

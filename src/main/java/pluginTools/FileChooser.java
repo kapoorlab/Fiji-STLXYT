@@ -38,6 +38,8 @@ import listeners.ChooseOrigMap;
 import listeners.ChooseSegMap;
 import listeners.GoFreeFLListener;
 import listeners.GoMaskFLListener;
+import listeners.GoNoTMListener;
+import listeners.GoTMListener;
 import loadfile.CovistoOneChFileLoader;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
@@ -47,7 +49,7 @@ import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
 import pluginTools.simplifiedio.SimplifiedIO;
-import tracking.Trackobject;
+import tracking.BCellobject;
 
 public class FileChooser extends JPanel {
 
@@ -77,7 +79,7 @@ public class FileChooser extends JPanel {
 	public JComboBox<String> ChoosesuperImage;
 	public JComboBox<String> ChooseoriginalImage;
 	public JButton Done = new JButton("Collect Cells and Start Computing");
-	public HashMap<Integer, ArrayList<Trackobject>> CSVFileInfo = new HashMap<Integer, ArrayList<Trackobject>>(); 
+	public HashMap<Integer, ArrayList<BCellobject>> CSVFileInfo = new HashMap<Integer, ArrayList<BCellobject>>(); 
 	
 	public String chooseCellSegstring = "2D + time Segmentation for Cells";
 	public Border chooseCellSeg = new CompoundBorder(new TitledBorder(chooseCellSegstring), new EmptyBorder(c.insets));
@@ -103,21 +105,40 @@ public class FileChooser extends JPanel {
 	public Border LoadBtrack = new CompoundBorder(new TitledBorder(donestring), new EmptyBorder(c.insets));
 
 	public Label inputLabelcalX, inputLabelcalY, inputLabelcalZ, inputLabelcalT;
-	public double calibrationX, calibrationY, calibrationZ, FrameInterval, TimeTotal;
+	public double calibrationX, calibrationY, FrameInterval, TimeTotal;
 	
 	public Label inputZ, inputT;
-	public TextField inputFieldZ, inputFieldT;
+	public TextField inputFieldT;
 
-	public TextField inputFieldcalX, inputFieldcalY, inputFieldcalZ, FieldinputLabelcalT;
+	public TextField inputFieldcalX, inputFieldcalY, FieldinputLabelcalT;
 	public Border microborder = new CompoundBorder(new TitledBorder("Microscope parameters"),
 			new EmptyBorder(c.insets));
 	public boolean DoMask = false;
 	public boolean NoMask = true;
+	
+	public boolean DoTrackMate = true;
+	public boolean DoNotTrackMate = false;
+	
+	public boolean FilamentTrackMate = true;
+	public boolean NotFilamentTrackMate = false;
+	
 	public JButton Checkpointbutton = new JButton("Data from CSV");
+	
+	
 	public CheckboxGroup cellmode = new CheckboxGroup();
 	public Checkbox FreeMode = new Checkbox("No Mask", NoMask, cellmode);
 	public Checkbox MaskMode = new Checkbox("With Mask", DoMask, cellmode);
 
+	public Boolean TrackMate = true;
+	public CheckboxGroup trackmatemode = new CheckboxGroup();
+	public Checkbox TrackMateMode = new Checkbox("TrackMate Style Analysis", DoTrackMate, trackmatemode);
+	public Checkbox NonTrackMateMode = new Checkbox("With Mask", DoNotTrackMate, trackmatemode);
+	
+	public Boolean Filament = true;
+	public CheckboxGroup filamentmode = new CheckboxGroup();
+	public Checkbox FilamentTrackMateMode = new Checkbox("I am a Filament", FilamentTrackMate, filamentmode);
+	public Checkbox NonFilamentTrackMateMode = new Checkbox("I am a Cell", NotFilamentTrackMate, filamentmode);
+	
 	public FileChooser() {
 
 		inputLabelcalX = new Label("Pixel calibration in X(um)");
@@ -128,10 +149,6 @@ public class FileChooser extends JPanel {
 		inputFieldcalY = new TextField(5);
 		inputFieldcalY.setText("1");
 
-		inputLabelcalZ = new Label("Pixel calibration in Z(um)");
-		inputFieldcalZ = new TextField(5);
-		inputFieldcalZ.setText("1");
-
 		inputLabelcalT = new Label("Pixel calibration in T (min)");
 		FieldinputLabelcalT = new TextField(5);
 		FieldinputLabelcalT.setText("1");
@@ -141,12 +158,6 @@ public class FileChooser extends JPanel {
 		inputFieldT = new TextField(5);
 		inputFieldT.setText("1");
 		
-		
-		inputZ = new Label("Current Z = 1");
-		inputFieldZ = new TextField(5);
-		inputFieldZ.setText("1");
-		
-		
 		panelFirst.setLayout(layout);
 
 		Paneldone.setLayout(layout);
@@ -154,7 +165,6 @@ public class FileChooser extends JPanel {
 		CardLayout cl = new CardLayout();
 		calibrationX = Float.parseFloat(inputFieldcalX.getText());
 		calibrationY = Float.parseFloat(inputFieldcalY.getText());
-		calibrationZ = Float.parseFloat(inputFieldcalZ.getText());
 
 		FrameInterval = Float.parseFloat(FieldinputLabelcalT.getText());
 
@@ -175,6 +185,17 @@ public class FileChooser extends JPanel {
 
 		Panelfileoriginal = original.SingleChannelOption();
 
+		panelFirst.add(TrackMateMode, new GridBagConstraints(0, 1, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.HORIZONTAL, insets, 0, 0));
+		panelFirst.add(NonTrackMateMode, new GridBagConstraints(1, 1, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.HORIZONTAL, insets, 0, 0));
+		
+		
+		panelFirst.add(FilamentTrackMateMode, new GridBagConstraints(0, 1, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.HORIZONTAL, insets, 0, 0));
+		panelFirst.add(NonFilamentTrackMateMode, new GridBagConstraints(1, 1, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.HORIZONTAL, insets, 0, 0));
+		
 		panelFirst.add(Panelfileoriginal, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
@@ -215,12 +236,6 @@ public class FileChooser extends JPanel {
 		Microscope.add(inputFieldcalY, new GridBagConstraints(3, 1, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.RELATIVE, insets, 0, 0));
 
-		Microscope.add(inputLabelcalZ, new GridBagConstraints(0, 4, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
-				GridBagConstraints.HORIZONTAL, insets, 0, 0));
-
-		Microscope.add(inputFieldcalZ, new GridBagConstraints(0, 5, 3, 1, 0.1, 0.0, GridBagConstraints.WEST,
-				GridBagConstraints.RELATIVE, insets, 0, 0));
-
 		Microscope.add(inputLabelcalT, new GridBagConstraints(3, 4, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.RELATIVE, insets, 0, 0));
 
@@ -244,13 +259,17 @@ public class FileChooser extends JPanel {
 
 		FreeMode.addItemListener(new GoFreeFLListener(this));
 		MaskMode.addItemListener(new GoMaskFLListener(this));
+		
+		TrackMateMode.addItemListener(new GoTMListener(this));
+		NonTrackMateMode.addItemListener(new GoNoTMListener(this));
+		
 		segmentation.ChooseImage.addActionListener(new ChooseSegMap(this, segmentation.ChooseImage));
 
 		inputFieldcalX.addTextListener(new CalXListener());
 		inputFieldcalY.addTextListener(new CalYListener());
 		FieldinputLabelcalT.addTextListener(new CalTListener());
 		inputFieldT.addTextListener(new InputTListener());
-		Done.addActionListener(new GreenDoneListener());
+		Done.addActionListener(new DoneListener());
 		panelFirst.setVisible(true);
 		cl.show(panelCont, "1");
 		Cardframe.add(panelCont, "Center");
@@ -287,18 +306,6 @@ public class FileChooser extends JPanel {
 
 	}
 
-	public class CalZListener implements TextListener {
-
-		@Override
-		public void textValueChanged(TextEvent e) {
-			final TextComponent tc = (TextComponent) e.getSource();
-			String s = tc.getText();
-
-			if (s.length() > 0)
-				calibrationZ = Double.parseDouble(s);
-		}
-
-	}
 
 	public class CalTListener implements TextListener {
 
@@ -329,13 +336,13 @@ public class FileChooser extends JPanel {
 	}
 
 
-	public class GreenDoneListener implements ActionListener {
+	public class DoneListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 
 			try {
-				DoneCurrGreen(Cardframe);
+				DoneCurr(Cardframe);
 			} catch (ImgIOException e1) {
 
 			}
@@ -343,33 +350,20 @@ public class FileChooser extends JPanel {
 
 	}
 
-	public void DoneCurrGreen(Frame parent) throws ImgIOException {
+	public void DoneCurr(Frame parent) throws ImgIOException {
 
 		
 		
 		WindowManager.closeAllWindows();
-		// Tracking and Measurement is done with imageA
-
-		
 		Done.setEnabled(false);
 		Checkpointbutton.setEnabled(false);
-		
-		// Segmentation image for green cells
-
-
 		String name = impOrig.getOriginalFileInfo().fileName;
-		//WindowManager.closeAllWindows();
-		// Image -> Mask -> Cell Mask
 		Cardframe.remove(jpb);
-
-	
-
 		
 		if (imageOrig.numDimensions() > 4) {
 
 			JOptionPane.showMessageDialog(new JFrame(),
-					"This tracker is for 3D + time images only, your image has higher dimensionality, split the channels perhaps?");
-
+					"This tracker is for 2D + time images only, your image has higher dimensionality, split the channels perhaps?");
 		}
 		imageSeg = SimplifiedIO.openImage(
       			impSeg.getOriginalFileInfo().directory + impSeg.getOriginalFileInfo().fileName,
@@ -393,7 +387,7 @@ public class FileChooser extends JPanel {
 			
 			InteractiveAnalysis CellCollection = new InteractiveAnalysis(ImagePairs.imageOrig, ImagePairs.imageSeg,CSVFileInfo, new File(impOrig.getOriginalFileInfo().directory), 
 					impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY,
-					FrameInterval, name);
+					FrameInterval, name, TrackMate);
 			
 			
 
@@ -409,7 +403,7 @@ public class FileChooser extends JPanel {
     			
     			InteractiveAnalysis CellCollection = new InteractiveAnalysis(imageOrig,null,CSVFileInfo, new File(impOrig.getOriginalFileInfo().directory), 
     					impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY,
-    					FrameInterval, name);
+    					FrameInterval, name, TrackMate);
     			
 
     			CellCollection.run(null);
@@ -430,7 +424,7 @@ public class FileChooser extends JPanel {
 			
 			
 			InteractiveAnalysis CellCollection = new InteractiveAnalysis(imageOrig, imageSeg,CSVFileInfo, new File(impOrig.getOriginalFileInfo().directory), impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY,
-					FrameInterval, name);
+					FrameInterval, name, TrackMate);
 			
 			CellCollection.run(null);
 
@@ -444,7 +438,7 @@ public class FileChooser extends JPanel {
 				
 				
 				InteractiveAnalysis CellCollection = new InteractiveAnalysis(imageOrig, null, CSVFileInfo, new File(impOrig.getOriginalFileInfo().directory), impOrig.getOriginalFileInfo().fileName, calibrationX, calibrationY,
-						FrameInterval, name);
+						FrameInterval, name, TrackMate);
 				
 
 				CellCollection.run(null);
@@ -467,7 +461,6 @@ public class FileChooser extends JPanel {
 
 		calibrationX = Float.parseFloat(inputFieldcalX.getText());
 		calibrationY = Float.parseFloat(inputFieldcalY.getText());
-		calibrationZ = Float.parseFloat(inputFieldcalZ.getText());
 		FrameInterval = Float.parseFloat(FieldinputLabelcalT.getText());
 
 	}

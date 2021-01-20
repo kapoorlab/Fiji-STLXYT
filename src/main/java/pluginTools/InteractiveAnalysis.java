@@ -43,6 +43,7 @@ import javax.swing.table.JTableHeader;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import coreFunction.BackgroundTMFunction;
 import functionPanel.CovistoFunctionPanel;
 import ij.IJ;
 import ij.ImagePlus;
@@ -73,7 +74,7 @@ import net.imglib2.util.ValuePair;
 import net.imglib2.view.Views;
 import tracking.Cellobject;
 import tracking.Roiobject;
-import tracking.Trackobject;
+import tracking.BCellobject;
 
 public class InteractiveAnalysis extends JPanel implements PlugIn {
 
@@ -111,7 +112,7 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 	public HashMap<String, Double> TrackMaxVelocitylist;
 	public HashMap<Integer, HashMap<Integer, Double>> VelocityMap;
 
-	public HashMap<String, ArrayList<Trackobject>> Allcells;
+	public HashMap<String, ArrayList<BCellobject>> Allcells;
 	public Overlay overlay;
 	public ImagePlus imp;
 	public String selectedID;
@@ -138,7 +139,7 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 	public int fourthDimensionSize;
 	public JProgressBar jpb;
 	public ArrayList<int[]> ZTRois;
-	public HashMap<Integer, ArrayList<Trackobject>> CSVInfoFile = new HashMap<Integer, ArrayList<Trackobject>>();
+	public HashMap<Integer, ArrayList<BCellobject>> CSVInfoFile = new HashMap<Integer, ArrayList<BCellobject>>();
 	public MouseMotionListener ml;
 	public ImagePlus resultimp;
 	public ImageJ ij;
@@ -153,7 +154,9 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 	public RandomAccessibleInterval<IntType> SegGreenoriginalimg;
 	//public TrackobjectCollection cells = new TrackobjectCollection();
 	public HashMap<Integer, Integer> IDlist = new HashMap<Integer, Integer>();
-	public HashMap<String, Trackobject> Finalresult;
+	public HashMap<String, BCellobject> Finalresult;
+	public final Boolean TrackMate;
+	public final Boolean FilamentMode;
 	// Input  and its segmentation
 
 
@@ -161,7 +164,7 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 	public InteractiveAnalysis(final RandomAccessibleInterval<FloatType> originalimg,
 			final RandomAccessibleInterval<IntType> Segoriginalimg,
 			final File defaultDirectory, final String NameA, final double calibrationX,
-			final double calibrationY, final double timecal, String inputstring) {
+			final double calibrationY, final double timecal, String inputstring, final Boolean TrackMate, final Boolean FilamentMode) {
 
 		this.originalimg = originalimg;
 		this.Segoriginalimg = Segoriginalimg;
@@ -172,15 +175,16 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 		this.timecal = timecal;
 		this.ndims = originalimg.numDimensions();
 		this.inputstring = inputstring;
-
+		this.TrackMate = TrackMate;
+        this.FilamentMode = FilamentMode;
 	}
 
 	// Input Image and one flourescent channel and mask images
 	public InteractiveAnalysis(final RandomAccessibleInterval<FloatType> originalimg,
 			final RandomAccessibleInterval<IntType> Segoriginalimg,
-			final HashMap<Integer,ArrayList<Trackobject>> CSVInfoFile,
+			final HashMap<Integer,ArrayList<BCellobject>> CSVInfoFile,
 			final File defaultDirectory, final String NameA, final double calibrationX,
-			final double calibrationY, final double timecal, String inputstring) {
+			final double calibrationY, final double timecal, String inputstring, final Boolean TrackMate, final Boolean FilamentMode) {
 
 		this.originalimg = originalimg;
 		this.Segoriginalimg = Segoriginalimg;
@@ -192,7 +196,8 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 		this.timecal = timecal;
 		this.ndims = originalimg.numDimensions();
 		this.inputstring = inputstring;
-
+        this.TrackMate = TrackMate;
+        this.FilamentMode = FilamentMode;
 	}
 
 	
@@ -228,7 +233,7 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 		AllRefcords = new HashMap<String, RealLocalizable>();
 		Allcenter = new ArrayList<RealLocalizable>();
 		Chosencenter = new ArrayList<RealLocalizable>();
-		Finalresult = new HashMap<String, Trackobject>();
+		Finalresult = new HashMap<String, BCellobject>();
 		ZTRois = new ArrayList<int[]>();
 		VelocityMap = new HashMap<Integer, HashMap<Integer, Double>>();
 		SelectedAllRefcords = new HashMap<String, RealLocalizable>();
@@ -259,9 +264,15 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 			imp.setTitle("Active Image" + " " + "time point : " + thirdDimension);
 
 
-				StartDisplayer();
+			if(TrackMate == false) {
+				//StartNonTMDisplayer();
 				Card();
-
+			}
+			
+			else {
+				
+				StartTMDisplayer(FilamentMode);
+			}
 
 
 		
@@ -305,12 +316,12 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 				
 			  
 				repaintView(CurrentView);
-				if (Analysis) {
+				if (TrackMate == false) {
 					if (CovistoKalmanPanel.Skeletontime.isEnabled()) {
 						imp.getOverlay().clear();
 						imp.updateAndDraw();
 						
-						StartDisplayer();
+						//StartNonTMDisplayer();
 
 					}
 				}
@@ -329,14 +340,14 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 
 	}
 
-	public void StartDisplayer() {
+	public void StartTMDisplayer(final Boolean FilamentMode) {
 		
 		
 		
 		
-		//ComputeFunction display = new ComputeFunction(this, jpb);
+		BackgroundTMFunction display = new BackgroundTMFunction(this, jpb);
 
-		//display.execute();
+		display.execute();
 	}
 
 

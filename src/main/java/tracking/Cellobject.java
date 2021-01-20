@@ -11,7 +11,9 @@ public class Cellobject {
 		
 		public final double cellPerimeter;
 		
-		public final Localizable Location;
+		public final Localizable StartLocation;
+		
+		public final Localizable EndLocation;
 		
 		public final int time;
 		
@@ -24,10 +26,12 @@ public class Cellobject {
 		
 		
 		
-		public Cellobject( Localizable location, int time, int label, double totalIntensity, double cellVolume, double cellPerimeter, double[] extents ) {
+		public Cellobject( Localizable StartLocation, Localizable EndLocation, int time, int label, double totalIntensity, double cellVolume, double cellPerimeter, double[] extents ) {
 			
 			
-			this.Location = location;
+			this.StartLocation = StartLocation;
+			
+			this.EndLocation = EndLocation;
 			
 			this.time = time;
 			

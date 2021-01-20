@@ -29,16 +29,16 @@ public class ShowView {
 			
 			parent.CurrentView = utility.Slicer.getCurrentView(parent.originalimg,(int) parent.thirdDimension,
 					(int)parent.thirdDimensionSize);
-			if(parent.SegYelloworiginalimg!=null)
-				parent.CurrentViewYellowInt = utility.Slicer.getCurrentView(parent.SegYelloworiginalimg,(int) parent.thirdDimension,
+			if(parent.Segoriginalimg!=null)
+				parent.CurrentViewInt = utility.Slicer.getCurrentView(parent.Segoriginalimg,(int) parent.thirdDimension,
 						(int)parent.thirdDimensionSize);
 			
 		} else {
 
 			parent.CurrentView = utility.Slicer.getCurrentView(parent.originalimg,(int) parent.thirdDimension,
 					(int)parent.thirdDimensionSize);
-			if(parent.SegYelloworiginalimg!=null)
-				parent.CurrentViewYellowInt = utility.Slicer.getCurrentView(parent.SegYelloworiginalimg,(int) parent.thirdDimension,
+			if(parent.Segoriginalimg!=null)
+				parent.CurrentViewInt = utility.Slicer.getCurrentView(parent.Segoriginalimg,(int) parent.thirdDimension,
 						(int)parent.thirdDimensionSize);
 			
 		}
