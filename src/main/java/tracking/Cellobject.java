@@ -16,7 +16,7 @@ public class Cellobject {
 		
 		public final RealLocalizable EndLocation;
 		
-		
+		public final RealLocalizable Location;
 		
 		public final int time;
 		
@@ -48,8 +48,34 @@ public class Cellobject {
 			
 			this.totalIntensity = totalIntensity;
 			
+			this.Location = null;
+			
 		}
 		
-	
+		public Cellobject( RealLocalizable Location, int time, int label, double totalIntensity, double cellVolume, double cellPerimeter, double[] extents ) {
+			
+			
+			this.Location = Location;
+			
+			
+			this.StartLocation = null;
+			
+			this.EndLocation = null;
+			
+			
+			this.time = time;
+			
+			this.label = label;
+			
+			this.cellVolume = cellVolume;
+			
+			this.cellPerimeter = cellPerimeter;
+			
+			this.extents = extents;
+			
+			this.totalIntensity = totalIntensity;
+			
+			
+		}
 	
 }

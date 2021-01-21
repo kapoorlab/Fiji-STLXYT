@@ -81,8 +81,10 @@ public class ObjectMaker implements Runnable {
 				
 				for (RealLocalizable endpoint: Endpoints) {
 				
-				      Cellobject insidecells = new Cellobject(startpoint, endpoint, parent.thirdDimension, label, intensity, cellArea, cellPerimeter, Extents); 
-				      Allcells.add(insidecells);	
+				      Cellobject insidestartcells = new Cellobject(startpoint,  parent.thirdDimension, label, intensity, cellArea, cellPerimeter, Extents); 
+				      Cellobject insideendcells = new Cellobject(endpoint,  parent.thirdDimension, label, intensity, cellArea, cellPerimeter, Extents); 
+				      Allcells.add(insidestartcells);
+				      Allcells.add(insideendcells);
 			}
 			
 			}
@@ -92,10 +94,15 @@ public class ObjectMaker implements Runnable {
 				
 				RealLocalizable startpoint = Endpoints.get(0);
 				RealLocalizable endpoint = Endpoints.get(Endpoints.size() - 1);
-				Cellobject insidecells = new Cellobject(startpoint, endpoint, parent.thirdDimension, label, intensity, cellArea, cellPerimeter, Extents); 
-			      Allcells.add(insidecells);
+				Cellobject insidestartcells = new Cellobject(startpoint, parent.thirdDimension, label, intensity, cellArea, cellPerimeter, Extents); 
+				Cellobject insideendcells = new Cellobject(endpoint, parent.thirdDimension, label, intensity, cellArea, cellPerimeter, Extents); 
+			      Allcells.add(insidestartcells);
+			      Allcells.add(insideendcells);
 				
 			}
+			
+			// ALLCells goes to the optimizer for location refinement
+			
 			
 		}
 		

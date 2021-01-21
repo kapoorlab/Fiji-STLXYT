@@ -48,7 +48,6 @@ public class FilamentEnder {
 		
 		ArrayList<Roiobject> Allrois = new ArrayList<Roiobject>();
 		String uniqueID = Integer.toString(parent.thirdDimension);
-		System.out.println("Label:" + label + " time" + parent.thirdDimension);
 		
 		Pair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>>  currentskel = new ValuePair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>>(null, null);
 

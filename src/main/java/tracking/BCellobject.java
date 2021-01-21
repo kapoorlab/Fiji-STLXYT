@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import TrackBuddy.plugin.trackmate.Dimension;
 import net.imglib2.AbstractEuclideanSpace;
-import net.imglib2.RealLocalizable;
+import net.imglib2.Localizable;
 import net.imglib2.Point;
 import net.imglib2.RealLocalizable;
 
@@ -24,30 +24,9 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		private String name;
 		public int time;
 		public final Cellobject currentcell;
-		static int totalfeatures = 13;
+		static int totalfeatures = 9;
 		
-		public BCellobject( final RealLocalizable currentcell) {
-			
-			
-			
-			super(3);
-			this.ID = IDcounter.incrementAndGet();
-			putFeature( STARTPOSITION_X, Double.valueOf( currentcell.getDoublePosition(0) ) );
-			putFeature( STARTPOSITION_Y, Double.valueOf( currentcell.getDoublePosition(1) ) );
-			putFeature( ENDPOSITION_X, Double.valueOf( currentcell.getDoublePosition(0) ) );
-			putFeature( ENDPOSITION_Y, Double.valueOf( currentcell.getDoublePosition(1) ) );
-			putFeature( POSITION_X, Double.valueOf( currentcell.getDoublePosition(0) ) );
-			putFeature( POSITION_Y, Double.valueOf( currentcell.getDoublePosition(1) ) );
-			putFeature( POSITION_Z, Double.valueOf( currentcell.getDoublePosition(2) ) );
-			putFeature( Radi_X, Double.valueOf( 1 ) );
-			putFeature( Radi_Y, Double.valueOf( 1) );
-			putFeature( Radi_Z, Double.valueOf( 1) );
-			putFeature( Size, Double.valueOf( 1));
-			putFeature( INTENSITY, Double.valueOf( 1) );
-			this.currentcell = null;
-			this.name = "ID" + ID;
-			
-		}
+
 		
 	
 		public BCellobject( final int ID )
@@ -70,17 +49,12 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 			
 			super(3);
 			this.ID = IDcounter.incrementAndGet();
-			putFeature( STARTPOSITION_X, Double.valueOf( currentcell.StartLocation.getDoublePosition(0) ) );
-			putFeature( STARTPOSITION_Y, Double.valueOf( currentcell.StartLocation.getDoublePosition(1) ) );
-			putFeature( ENDPOSITION_X, Double.valueOf( currentcell.EndLocation.getDoublePosition(0) ) );
-			putFeature( ENDPOSITION_Y, Double.valueOf( currentcell.EndLocation.getDoublePosition(1) ) );
-			putFeature( POSITION_X, Double.valueOf( 0.5 * (currentcell.StartLocation.getDoublePosition(0) + currentcell.EndLocation.getDoublePosition(0) ) ) );
-			putFeature( POSITION_Y, Double.valueOf( 0.5 * (currentcell.StartLocation.getDoublePosition(1) + currentcell.EndLocation.getDoublePosition(1)  )) );
-			putFeature( POSITION_Z, Double.valueOf(1 ) );
+			putFeature( POSITION_X, Double.valueOf( (currentcell.Location.getDoublePosition(0) ) ) );
+			putFeature( POSITION_Y, Double.valueOf( (currentcell.Location.getDoublePosition(1) )) );
+			putFeature( POSITION_Z, 1.0 );
 			putFeature( Radi_X, Double.valueOf( currentcell.extents[0] ) );
 			putFeature( Radi_Y, Double.valueOf( currentcell.extents[1] ) );
-			putFeature( Radi_Z, Double.valueOf(1) );
-			putFeature( Size, (Double.valueOf( currentcell.extents[0] ) + Double.valueOf( currentcell.extents[1] ) + 1  )/3 );
+			putFeature( Size, (Double.valueOf( currentcell.extents[0] ) + Double.valueOf( currentcell.extents[1] )   )/2 );
 			putFeature( INTENSITY, Double.valueOf( currentcell.totalIntensity ) );
 			putFeature( POSITION_T, Double.valueOf( time) );
 			
@@ -90,14 +64,30 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 			
 		}
 		
-		public BCellobject( final double x, final double y, final double z,   final double radius,  final String name )
+		
+		public BCellobject( final RealLocalizable currentcell) {
+			
+			
+			
+			super(3);
+			this.ID = IDcounter.incrementAndGet();
+			putFeature( POSITION_X, Double.valueOf( currentcell.getDoublePosition(0) ) );
+			putFeature( POSITION_Y, Double.valueOf( currentcell.getDoublePosition(1) ) );
+			putFeature( POSITION_Z, Double.valueOf( 1 ));
+			putFeature( Radi_X, Double.valueOf( 1 ) );
+			putFeature( Radi_Y, Double.valueOf( 1) );
+			putFeature( Size, Double.valueOf( 1));
+			putFeature( INTENSITY, Double.valueOf( 1) );
+			
+			
+			this.currentcell = null;
+			this.name = "ID" + ID;
+			
+		}
+		public BCellobject( final double x, final double y, final double z, final double radius,  final String name )
 		{
 			super( 3 );
 			this.ID = IDcounter.incrementAndGet();
-			putFeature( STARTPOSITION_X, Double.valueOf( x ) );
-			putFeature( STARTPOSITION_Y, Double.valueOf( y ) );
-			putFeature( ENDPOSITION_X, Double.valueOf( x ) );
-			putFeature( ENDPOSITION_Y, Double.valueOf( y ) );
 			putFeature( POSITION_X, Double.valueOf( x ) );
 			putFeature( POSITION_Y, Double.valueOf( y ) );
 			putFeature( POSITION_Z, Double.valueOf( z ) );
@@ -110,24 +100,12 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 			{
 				this.name = name;
 			}
-			this.currentcell = null;
 			
+			this.currentcell = null;
 		}
 
-		
-		
-		/** The name of the cell X position feature. */
-		public static final String STARTPOSITION_X = "STARTPOSITION_X";
 
-		/** The name of the cell Y position feature. */
-		public static final String STARTPOSITION_Y = "STARTPOSITION_Y";
-		
 		/** The name of the cell X position feature. */
-		public static final String ENDPOSITION_X = "ENDPOSITION_X";
-
-		/** The name of the cell Y position feature. */
-		public static final String ENDPOSITION_Y = "ENDPOSITION_Y";
-		
 		
 		/** The name of the cell X position feature. */
 		public static final String POSITION_X = "POSITION_X";
@@ -144,15 +122,12 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		/** The name of the cell Y position feature. */
 		public static final String Radi_Y = "Radi_Y";
 		
-
-		/** The name of the cell Y position feature. */
-		public static final String Radi_Z = "Radi_Z";
 		
 		/** The name of the Size position feature. */
 		public static final String Size = "Size";
 
 		/** The name of the cell Radius feature. */
-		public static final String[] RADIUS = new String[] {Radi_X, Radi_Y, Radi_Z};
+		public static final String[] RADIUS = new String[] {Radi_X, Radi_Y};
 		
 		/** The name of the cell Radius feature. */
 		public static final String INTENSITY = "INTENSITY";
@@ -161,7 +136,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		public static final String POSITION_T = "POSITION_T";
 
 		/** The position features. */
-		public final static String[] POSITION_FEATURES = new String[] { STARTPOSITION_X, STARTPOSITION_Y, ENDPOSITION_X, ENDPOSITION_Y , POSITION_X, POSITION_Y, POSITION_Z };
+		public final static String[] POSITION_FEATURES = new String[] { POSITION_X, POSITION_Y , POSITION_Z};
 
 		
 		public final static Collection< String > FEATURES = new ArrayList< >( totalfeatures );
@@ -197,11 +172,6 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		}
 		static
 		{
-			FEATURES.add( STARTPOSITION_X );
-			FEATURES.add( STARTPOSITION_Y );
-			
-			FEATURES.add( ENDPOSITION_X );
-			FEATURES.add( ENDPOSITION_Y );
 			
 			FEATURES.add( POSITION_X );
 			FEATURES.add( POSITION_Y );
@@ -210,15 +180,9 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 			FEATURES.add( POSITION_T );
 			FEATURES.add( Radi_X );
 			FEATURES.add( Radi_Y );
-			FEATURES.add( Radi_Z );
 			FEATURES.add( INTENSITY );
 			FEATURES.add( Size );
 			
-			FEATURE_NAMES.put( STARTPOSITION_X, "StartX" );
-			FEATURE_NAMES.put( STARTPOSITION_Y, "StartY" );
-			
-			FEATURE_NAMES.put( ENDPOSITION_X, "EndX" );
-			FEATURE_NAMES.put( ENDPOSITION_Y, "EndY" );
 			
 			FEATURE_NAMES.put( POSITION_X, "X" );
 			FEATURE_NAMES.put( POSITION_Y, "Y" );
@@ -227,15 +191,9 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 
 			FEATURE_NAMES.put( Radi_X, "Radi_X" );
 			FEATURE_NAMES.put( Radi_Y, "Radi_Y" );
-			FEATURE_NAMES.put( Radi_Z, "Radi_Z" );
 			FEATURE_NAMES.put( INTENSITY, "Intensity" );
 			FEATURE_NAMES.put( Size, "Size" );
 			
-			FEATURE_SHORT_NAMES.put( STARTPOSITION_X, "StartX" );
-			FEATURE_SHORT_NAMES.put( STARTPOSITION_Y, "StartY" );
-			
-			FEATURE_SHORT_NAMES.put( ENDPOSITION_X, "EndX" );
-			FEATURE_SHORT_NAMES.put( ENDPOSITION_Y, "EndY" );
 			
 			FEATURE_SHORT_NAMES.put( POSITION_X, "X" );
 			FEATURE_SHORT_NAMES.put( POSITION_Y, "Y" );
@@ -243,14 +201,9 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 			FEATURE_SHORT_NAMES.put( POSITION_T, "T" );
 			FEATURE_SHORT_NAMES.put( Radi_X, "Radi_X" );
 			FEATURE_SHORT_NAMES.put( Radi_Y, "Radi_Y" );
-			FEATURE_SHORT_NAMES.put( Radi_Z, "Radi_Z" );
 			FEATURE_SHORT_NAMES.put( INTENSITY, "I" );
 			FEATURE_SHORT_NAMES.put( Size, "Size" );
 			
-			FEATURE_DIMENSIONS.put( STARTPOSITION_X, Dimension.POSITION );
-			FEATURE_DIMENSIONS.put( STARTPOSITION_Y, Dimension.POSITION );
-			FEATURE_DIMENSIONS.put( ENDPOSITION_X, Dimension.POSITION );
-			FEATURE_DIMENSIONS.put( ENDPOSITION_Y, Dimension.POSITION );
 			FEATURE_DIMENSIONS.put( POSITION_X, Dimension.POSITION );
 			FEATURE_DIMENSIONS.put( POSITION_Y, Dimension.POSITION );
 			FEATURE_DIMENSIONS.put( POSITION_Z, Dimension.POSITION );
@@ -258,15 +211,9 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 			FEATURE_DIMENSIONS.put( POSITION_T, Dimension.TIME );
 			FEATURE_DIMENSIONS.put( Radi_X, Dimension.LENGTH );
 			FEATURE_DIMENSIONS.put( Radi_Y, Dimension.LENGTH );
-			FEATURE_DIMENSIONS.put( Radi_Z, Dimension.LENGTH );
 			FEATURE_DIMENSIONS.put( Size, Dimension.LENGTH );
 			FEATURE_DIMENSIONS.put( INTENSITY, Dimension.LENGTH );
 			
-			IS_INT.put( STARTPOSITION_X, Boolean.FALSE );
-			IS_INT.put( STARTPOSITION_Y, Boolean.FALSE );
-			
-			IS_INT.put( ENDPOSITION_X, Boolean.FALSE );
-			IS_INT.put( ENDPOSITION_Y, Boolean.FALSE );
 			
 			IS_INT.put( POSITION_X, Boolean.FALSE );
 			IS_INT.put( POSITION_Y, Boolean.FALSE );
@@ -274,7 +221,6 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 			IS_INT.put( POSITION_T, Boolean.FALSE );
 			IS_INT.put( Radi_X, Boolean.FALSE );
 			IS_INT.put( Radi_Y, Boolean.FALSE );
-			IS_INT.put( Radi_Z, Boolean.FALSE );
 			IS_INT.put( Size, Boolean.FALSE );
 			IS_INT.put( INTENSITY, Boolean.FALSE );
 		}
@@ -317,12 +263,12 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 
 		@Override
 		public float getFloatPosition(int d) {
-			return (float) 0.5 *( currentcell.StartLocation.getFloatPosition(d) + currentcell.EndLocation.getFloatPosition(d));
+			return (float) ( currentcell.Location.getFloatPosition(d) );
 		}
 
 		@Override
 		public double getDoublePosition(int d) {
-			return 0.5 * (currentcell.StartLocation.getDoublePosition(d) + currentcell.EndLocation.getDoublePosition(d)) ;
+			return (currentcell.Location.getDoublePosition(d)) ;
 		}
 		
 		/**
@@ -337,8 +283,8 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		 */
 		public double diffTo(final BCellobject target, int n) {
 
-			final double thisBloblocation = 0.5 * (currentcell.StartLocation.getDoublePosition(n) + currentcell.EndLocation.getDoublePosition(n));
-			final double targetBloblocation = 0.5 * (target.currentcell.StartLocation.getDoublePosition(n) + target.currentcell.EndLocation.getDoublePosition(n));
+			final double thisBloblocation = currentcell.Location.getDoublePosition(n) ;
+			final double targetBloblocation = (target.currentcell.Location.getDoublePosition(n) );
 			return thisBloblocation - targetBloblocation;
 		}
 		/**
@@ -400,7 +346,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		 * @return the distance to the current cloud to target cloud specified.
 		 */
 
-		public RealLocalizable add(RealLocalizable source, RealLocalizable target) {
+		public Localizable add(Localizable source, Localizable target) {
 			
 			assert source.numDimensions() == target.numDimensions();
 			
@@ -420,15 +366,9 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		public double squareDistanceTo(BCellobject target) {
 			// Returns squared distance between the source Blob and the target Blob.
 
-			final RealLocalizable sourceLocationStart = currentcell.StartLocation;
-			final RealLocalizable sourceLocationEnd = currentcell.EndLocation;
 			
-			
-			final RealLocalizable targetLocationStart = target.currentcell.StartLocation;
-			final RealLocalizable targetLocationEnd = target.currentcell.EndLocation;
-			
-			final RealLocalizable sourceLocation = add(sourceLocationStart, sourceLocationEnd);
-			final RealLocalizable targetLocation = add(targetLocationStart, targetLocationEnd);
+			final RealLocalizable sourceLocation = currentcell.Location;
+			final RealLocalizable targetLocation = target.currentcell.Location;
 			
 			double distance = 0;
 			
@@ -442,15 +382,9 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		public double DistanceTo(BCellobject target, final double alpha, final double beta) {
 			// Returns squared distance between the source Blob and the target Blob.
 
-			final RealLocalizable sourceLocationStart = currentcell.StartLocation;
-			final RealLocalizable sourceLocationEnd = currentcell.EndLocation;
 			
-			
-			final RealLocalizable targetLocationStart = target.currentcell.StartLocation;
-			final RealLocalizable targetLocationEnd = target.currentcell.EndLocation;
-			
-			final RealLocalizable sourceLocation = add(sourceLocationStart, sourceLocationEnd);
-			final RealLocalizable targetLocation = add(targetLocationStart, targetLocationEnd);
+			final RealLocalizable sourceLocation = currentcell.Location;
+			final RealLocalizable targetLocation =  target.currentcell.Location;
 
 			double distance = 0;
 

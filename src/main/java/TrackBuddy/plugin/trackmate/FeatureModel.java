@@ -334,11 +334,11 @@ public class FeatureModel {
 			}
 			trackFeatureShortNames.put(feature, shortName);
 
-			final Dimension dimension = featureDimensions.get(feature);
-			if (null == dimension) {
-				throw new IllegalArgumentException("Feature " + feature + " misses a dimension.");
-			}
-			trackFeatureDimensions.put(feature, dimension);
+		//	final Dimension dimension = featureDimensions.get(feature);
+		//	if (null == dimension) {
+		//		throw new IllegalArgumentException("Feature " + feature + " misses a dimension.");
+		//	}
+		//	trackFeatureDimensions.put(feature, dimension);
 
 			final Boolean isInt = isIntFeature.get(feature);
 			if (null == isInt) {
