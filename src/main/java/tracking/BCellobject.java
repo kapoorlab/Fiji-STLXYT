@@ -24,7 +24,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		private String name;
 		public int time;
 		public final Cellobject currentcell;
-		static int totalfeatures = 14;
+		static int totalfeatures = 13;
 		
 		public BCellobject( final RealLocalizable currentcell) {
 			
