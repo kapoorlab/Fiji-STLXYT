@@ -37,7 +37,7 @@ public class BackgroundTMFunction extends SwingWorker<Void, Void> {
 			
 			parent.jpb.setIndeterminate(false);
 			if(parent.jpb!=null )
-				utility.ProgressBar.SetProgressBar(parent.jpb, 100 ,
+				LabPluginutility.ProgressBar.SetProgressBar(parent.jpb, 100 ,
 						"Starting TrackMate");
 	
 			parent.imp.close();

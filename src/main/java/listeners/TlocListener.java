@@ -6,6 +6,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.TextEvent;
 import java.awt.event.TextListener;
 
+import LabPluginutility.ShowView;
 import ij.IJ;
 import kalmanGUI.CovistoKalmanPanel;
 import net.imglib2.RandomAccessibleInterval;
@@ -13,7 +14,6 @@ import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.type.logic.BitType;
 import pluginTools.InteractiveAnalysis;
 import pluginTools.InteractiveAnalysis.ValueChange;
-import utility.ShowView;
 
 public class TlocListener implements TextListener {
 	
@@ -65,7 +65,7 @@ public class TlocListener implements TextListener {
 					parent.timeText.setText("Current T = " + parent.thirdDimension);
 					parent.updatePreview(ValueChange.THIRDDIMmouse);
 					
-					parent.timeslider.setValue(utility.Slicer.computeScrollbarPositionFromValue(parent.thirdDimension, parent.thirdDimensionsliderInit, parent.thirdDimensionSize, parent.scrollbarSize));
+					parent.timeslider.setValue(LabPluginutility.Slicer.computeScrollbarPositionFromValue(parent.thirdDimension, parent.thirdDimensionsliderInit, parent.thirdDimensionSize, parent.scrollbarSize));
 					parent.timeslider.repaint();
 					parent.timeslider.validate();
 					

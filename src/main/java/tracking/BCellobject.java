@@ -234,12 +234,12 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 			FEATURE_SHORT_NAMES.put( STARTPOSITION_X, "StartX" );
 			FEATURE_SHORT_NAMES.put( STARTPOSITION_Y, "StartY" );
 			
-			FEATURE_SHORT_NAMES.put( STARTPOSITION_X, "EndX" );
-			FEATURE_SHORT_NAMES.put( STARTPOSITION_Y, "EndY" );
+			FEATURE_SHORT_NAMES.put( ENDPOSITION_X, "EndX" );
+			FEATURE_SHORT_NAMES.put( ENDPOSITION_Y, "EndY" );
 			
 			FEATURE_SHORT_NAMES.put( POSITION_X, "X" );
 			FEATURE_SHORT_NAMES.put( POSITION_Y, "Y" );
-			FEATURE_SHORT_NAMES.put( POSITION_Y, "Z" );
+			FEATURE_SHORT_NAMES.put( POSITION_Z, "Z" );
 			FEATURE_SHORT_NAMES.put( POSITION_T, "T" );
 			FEATURE_SHORT_NAMES.put( Radi_X, "Radi_X" );
 			FEATURE_SHORT_NAMES.put( Radi_Y, "Radi_Y" );

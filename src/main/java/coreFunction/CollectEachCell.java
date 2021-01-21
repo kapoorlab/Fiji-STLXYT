@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import LabPluginutility.Distance;
+import LabPluginutility.GetNearest;
 import net.imagej.ops.OpService;
 import net.imglib2.Cursor;
 import net.imglib2.Localizable;
@@ -21,8 +24,6 @@ import pluginTools.InteractiveAnalysis;
 import tracking.BCellobject;
 import tracking.Cellobject;
 import tracking.Regionobject;
-import utility.Distance;
-import utility.GetNearest;
 
 public class CollectEachCell  implements Runnable {
 
@@ -59,7 +60,7 @@ public class CollectEachCell  implements Runnable {
 
 												// For each bud get the list of points
 												if (parent.jpb != null)
-													utility.ProgressBar.SetProgressBar(parent.jpb,
+													LabPluginutility.ProgressBar.SetProgressBar(parent.jpb,
 															100 * (percent) / (parent.thirdDimensionSize + parent.pixellist.size()),
 															"Runnint at T = " + parent.thirdDimension + "/" + parent.thirdDimensionSize );
 

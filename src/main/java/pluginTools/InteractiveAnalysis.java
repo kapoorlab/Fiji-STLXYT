@@ -229,14 +229,14 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 			AutoendTime = thirdDimensionSize;
 
 			setTime(thirdDimension);
-			CurrentView = utility.Slicer.getCurrentView(originalimg, thirdDimension, thirdDimensionSize);
+			CurrentView = LabPluginutility.Slicer.getCurrentLabView(originalimg, thirdDimension, thirdDimensionSize);
 			
 			
 			if (Segoriginalimg!=null){
 
 				// Convert input binary image into integer labelled image
 				Segoriginalimg = LabelSegmentationImage(Segoriginalimg);
-				CurrentViewInt = utility.Slicer.getCurrentView(Segoriginalimg, thirdDimension, thirdDimensionSize);
+				CurrentViewInt = LabPluginutility.Slicer.getCurrentLabView(Segoriginalimg, thirdDimension, thirdDimensionSize);
 			
 				
 			}
@@ -320,9 +320,9 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 				imp.setTitle("Active Image" + " " + "time point : " + thirdDimension);
 				String TID = Integer.toString(thirdDimension);
 				AccountedT.put(TID, thirdDimension);
-				CurrentView = utility.Slicer.getCurrentView(originalimg, thirdDimension, thirdDimensionSize);
+				CurrentView = LabPluginutility.Slicer.getCurrentLabView(originalimg, thirdDimension, thirdDimensionSize);
 				if (Segoriginalimg!=null)
-				CurrentViewInt = utility.Slicer.getCurrentView(Segoriginalimg, thirdDimension,
+				CurrentViewInt = LabPluginutility.Slicer.getCurrentLabView(Segoriginalimg, thirdDimension,
 						thirdDimensionSize);
                 else {
 					

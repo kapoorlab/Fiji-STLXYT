@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import LabPluginutility.Distance;
+import LabPluginutility.GetNearest;
 import net.imagej.ops.OpService;
 import net.imglib2.Cursor;
 import net.imglib2.Point;
@@ -22,8 +24,6 @@ import net.imglib2.view.Views;
 import pluginTools.InteractiveAnalysis;
 import tracking.Regionobject;
 import tracking.Roiobject;
-import utility.Distance;
-import utility.GetNearest;
 import skeletor.*;
 
 public class FilamentEnder {

@@ -6,10 +6,10 @@ import java.awt.event.AdjustmentListener;
 
 import javax.swing.JScrollBar;
 
+import LabPluginutility.ShowView;
 import kalmanGUI.CovistoKalmanPanel;
 import pluginTools.InteractiveAnalysis;
 import pluginTools.InteractiveAnalysis.ValueChange;
-import utility.ShowView;
 
 public class TimeListener implements AdjustmentListener {
 	final Label label;
@@ -32,8 +32,8 @@ public class TimeListener implements AdjustmentListener {
 		this.deltaScrollbar = deltaScrollbar;
 		//deltaScrollbar.addMouseMotionListener(new BudMouseListener(parent, ValueChange.THIRDDIMmouse));
 		deltaScrollbar.addMouseListener(new StandardMouseListener(parent, ValueChange.THIRDDIMmouse));
-		deltaScrollbar.setBlockIncrement(utility.Slicer.computeScrollbarPositionFromValue(2, min, max, scrollbarSize));
-		deltaScrollbar.setUnitIncrement(utility.Slicer.computeScrollbarPositionFromValue(2, min, max, scrollbarSize));
+		deltaScrollbar.setBlockIncrement(LabPluginutility.Slicer.computeScrollbarPositionFromValue(2, min, max, scrollbarSize));
+		deltaScrollbar.setUnitIncrement(LabPluginutility.Slicer.computeScrollbarPositionFromValue(2, min, max, scrollbarSize));
 	}
 
 	@Override
@@ -44,11 +44,11 @@ public class TimeListener implements AdjustmentListener {
 		    parent.imp.updateAndDraw();	
 		}
 		
-		parent.thirdDimension = (int) Math.round(utility.Slicer.computeValueFromScrollbarPosition(e.getValue(), min, max, scrollbarSize));
+		parent.thirdDimension = (int) Math.round(LabPluginutility.Slicer.computeValueFromScrollbarPosition(e.getValue(), min, max, scrollbarSize));
 
 
 		deltaScrollbar
-		.setValue(utility.Slicer.computeScrollbarPositionFromValue(parent.thirdDimension, min, max, scrollbarSize));
+		.setValue(LabPluginutility.Slicer.computeScrollbarPositionFromValue(parent.thirdDimension, min, max, scrollbarSize));
 		
 		label.setText(string +  " = "  + parent.thirdDimension);
 
