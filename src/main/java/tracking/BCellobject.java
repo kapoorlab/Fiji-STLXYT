@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import TrackBuddy.plugin.trackmate.Dimension;
 import net.imglib2.AbstractEuclideanSpace;
-import net.imglib2.Localizable;
+import net.imglib2.RealLocalizable;
 import net.imglib2.Point;
 import net.imglib2.RealLocalizable;
 
@@ -400,7 +400,7 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		 * @return the distance to the current cloud to target cloud specified.
 		 */
 
-		public Localizable add(Localizable source, Localizable target) {
+		public RealLocalizable add(RealLocalizable source, RealLocalizable target) {
 			
 			assert source.numDimensions() == target.numDimensions();
 			
@@ -420,15 +420,15 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		public double squareDistanceTo(BCellobject target) {
 			// Returns squared distance between the source Blob and the target Blob.
 
-			final Localizable sourceLocationStart = currentcell.StartLocation;
-			final Localizable sourceLocationEnd = currentcell.EndLocation;
+			final RealLocalizable sourceLocationStart = currentcell.StartLocation;
+			final RealLocalizable sourceLocationEnd = currentcell.EndLocation;
 			
 			
-			final Localizable targetLocationStart = target.currentcell.StartLocation;
-			final Localizable targetLocationEnd = target.currentcell.EndLocation;
+			final RealLocalizable targetLocationStart = target.currentcell.StartLocation;
+			final RealLocalizable targetLocationEnd = target.currentcell.EndLocation;
 			
-			final Localizable sourceLocation = add(sourceLocationStart, sourceLocationEnd);
-			final Localizable targetLocation = add(targetLocationStart, targetLocationEnd);
+			final RealLocalizable sourceLocation = add(sourceLocationStart, sourceLocationEnd);
+			final RealLocalizable targetLocation = add(targetLocationStart, targetLocationEnd);
 			
 			double distance = 0;
 			
@@ -442,15 +442,15 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 		public double DistanceTo(BCellobject target, final double alpha, final double beta) {
 			// Returns squared distance between the source Blob and the target Blob.
 
-			final Localizable sourceLocationStart = currentcell.StartLocation;
-			final Localizable sourceLocationEnd = currentcell.EndLocation;
+			final RealLocalizable sourceLocationStart = currentcell.StartLocation;
+			final RealLocalizable sourceLocationEnd = currentcell.EndLocation;
 			
 			
-			final Localizable targetLocationStart = target.currentcell.StartLocation;
-			final Localizable targetLocationEnd = target.currentcell.EndLocation;
+			final RealLocalizable targetLocationStart = target.currentcell.StartLocation;
+			final RealLocalizable targetLocationEnd = target.currentcell.EndLocation;
 			
-			final Localizable sourceLocation = add(sourceLocationStart, sourceLocationEnd);
-			final Localizable targetLocation = add(targetLocationStart, targetLocationEnd);
+			final RealLocalizable sourceLocation = add(sourceLocationStart, sourceLocationEnd);
+			final RealLocalizable targetLocation = add(targetLocationStart, targetLocationEnd);
 
 			double distance = 0;
 

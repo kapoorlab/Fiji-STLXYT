@@ -171,9 +171,9 @@ public class FilamentEnder {
 		skelmake.run();
 		ArrayList<RandomAccessibleInterval<BitType>> Allskeletons = skelmake.getSkeletons();
 
-		Pair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>> skeletonSplitEndPoints  = AnalyzeSkeleton(Allskeletons,truths, ops);
+		Pair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>> skeletontEndSplitPoints  = AnalyzeSkeleton(Allskeletons,truths, ops);
 		
-		return skeletonSplitEndPoints;
+		return skeletontEndSplitPoints;
 		
 	}
 

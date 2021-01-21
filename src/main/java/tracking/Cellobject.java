@@ -1,6 +1,7 @@
 package tracking;
 
 import net.imglib2.Localizable;
+import net.imglib2.RealLocalizable;
 
 public class Cellobject {
 
@@ -11,9 +12,9 @@ public class Cellobject {
 		
 		public final double cellPerimeter;
 		
-		public final Localizable StartLocation;
+		public final RealLocalizable StartLocation;
 		
-		public final Localizable EndLocation;
+		public final RealLocalizable EndLocation;
 		
 		
 		
@@ -28,7 +29,7 @@ public class Cellobject {
 		
 		
 		
-		public Cellobject( Localizable StartLocation, Localizable EndLocation, int time, int label, double totalIntensity, double cellVolume, double cellPerimeter, double[] extents ) {
+		public Cellobject( RealLocalizable StartLocation, RealLocalizable EndLocation, int time, int label, double totalIntensity, double cellVolume, double cellPerimeter, double[] extents ) {
 			
 			
 			this.StartLocation = StartLocation;
@@ -49,26 +50,6 @@ public class Cellobject {
 			
 		}
 		
-		
-		public Cellobject( Localizable StartLocation, int time, int label, double totalIntensity, double cellVolume, double cellPerimeter, double[] extents ) {
-			
-			
-			this.StartLocation = StartLocation;
-			
-			this.EndLocation = null;
-			
-			this.time = time;
-			
-			this.label = label;
-			
-			this.cellVolume = cellVolume;
-			
-			this.cellPerimeter = cellPerimeter;
-			
-			this.extents = extents;
-			
-			this.totalIntensity = totalIntensity;
-			
-		}
+	
 	
 }

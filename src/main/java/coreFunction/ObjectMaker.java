@@ -54,18 +54,52 @@ public class ObjectMaker implements Runnable {
 		double[] Extents = radiusXY( SmallBigPairCurrentViewBit.getA().Boundaryimage);
 		
 		
-		Cellobject insideGreencells = new Cellobject(cellcenterpoint, parent.thirdDimension, label, intensity, cellArea, cellPerimeter, Extents); 
-		Allcells.add(insideGreencells);
+		Cellobject insidecells = new Cellobject(cellcenterpoint,cellcenterpoint, parent.thirdDimension, label, intensity, cellArea, cellPerimeter, Extents); 
+		Allcells.add(insidecells);
 		
 		}
 		
 		// If you have filaments collect all the end points and make the cell object
 		
 		if(parent.FilamentMode == true) {
+			Pair<Regionobject, Regionobject> SmallBigPairCurrentViewBit = FilamentEnder
+					.DualCurrentLabelBinaryImage(parent.CurrentViewInt, label);
+			
+			// For
+			double cellArea = Volume(SmallBigPairCurrentViewBit.getA().Interiorimage);
+			double cellPerimeter = Volume(SmallBigPairCurrentViewBit.getA().Boundaryimage);
+			double intensity = getIntensity(parent, SmallBigPairCurrentViewBit.getA().Interiorimage);
+			double[] Extents = radiusXY( SmallBigPairCurrentViewBit.getA().Boundaryimage);
+			
 			
 			FilamentEnder EndSplitPointList = new FilamentEnder(parent, label); 
 			// Initial guess for end points and split points
-			Pair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>> skeletonSplitEndPoints  = EndSplitPointList.displays();
+			Pair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>> skeletontEndSplitPoints  = EndSplitPointList.displays();
+			
+			ArrayList<RealLocalizable> Endpoints = skeletontEndSplitPoints.getA();
+			ArrayList<RealLocalizable> SplitPoints = skeletontEndSplitPoints.getB();
+			
+			if(SplitPoints!=null && SplitPoints.size() > 0) {
+			for(RealLocalizable startpoint: SplitPoints) {
+				
+				for (RealLocalizable endpoint: Endpoints) {
+				
+				      Cellobject insidecells = new Cellobject(startpoint, endpoint, parent.thirdDimension, label, intensity, cellArea, cellPerimeter, Extents); 
+				      Allcells.add(insidecells);	
+			}
+			
+			}
+			}
+			
+			else {
+				
+				RealLocalizable startpoint = Endpoints.get(0);
+				RealLocalizable endpoint = Endpoints.get(Endpoints.size() - 1);
+				Cellobject insidecells = new Cellobject(startpoint, endpoint, parent.thirdDimension, label, intensity, cellArea, cellPerimeter, Extents); 
+			      Allcells.add(insidecells);
+				
+			}
+			
 		}
 		
 		
