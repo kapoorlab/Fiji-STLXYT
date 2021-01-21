@@ -33,8 +33,8 @@ public class TMobjectCollector {
 
 		int percent = 0;
 		// set up executor service
-		for (int t = 1; t < parent.fourthDimensionSize; ++t) {
-			parent.fourthDimension = t;
+		for (int t = 1; t < parent.thirdDimensionSize; ++t) {
+			parent.thirdDimension = t;
 			if(parent.imp.getOverlay()!=null)
 				parent.overlay.clear();
 			 //we start from zero

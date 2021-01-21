@@ -39,10 +39,6 @@ public class CollectEachCell  implements Runnable {
 			this.percent = percent;
 		}
 		
-
-
-		
-		
 		public ArrayList<Cellobject> returnlist(){
 			
 			
@@ -65,7 +61,7 @@ public class CollectEachCell  implements Runnable {
 												if (parent.jpb != null)
 													utility.ProgressBar.SetProgressBar(parent.jpb,
 															100 * (percent) / (parent.thirdDimensionSize + parent.pixellist.size()),
-															"Collecting Cells T = " + parent.thirdDimension + "/" + parent.thirdDimensionSize );
+															"Runnint at T = " + parent.thirdDimension + "/" + parent.thirdDimensionSize );
 
 												tasks.add(Executors.callable(new ParallelLabel(parent, Celllist,  uniqueID)));
 		try {
@@ -79,64 +75,9 @@ public class CollectEachCell  implements Runnable {
 
 		}
 		
-		public void Common(Regionobject  PairCurrentViewBit,
-				List<RealLocalizable> truths, RealLocalizable centerpoint, String uniqueID,
-				int label) {
+		
 
-			
-			// If we are analzing cells just collect them and create trackmate model
-			if(parent.FilamentMode == false) {
-			
-			Celllist  = GetNearest.getAllInterior3DCells(parent,  parent.CurrentViewYellowInt);
-	     	for(Cellobject currentbudcell:Celllist) {
-				BCellobject budncell = new BCellobject(currentbudcell, parent.thirdDimension);
-	            parent.cells.add(budncell, parent.thirdDimension);  
-			}
-			}
-			
-			// If we are analyzing filaments/microtubules get the end points and create trackmatre model
-			if(parent.FilamentMode == true) {
-				
-				
-				
-			}
-			
-			
-		}
-
-
-
-		public static ArrayList<RealLocalizable> GetCorner(Regionobject PairCurrentViewBit,
-				OpService ops) {
-
-			ArrayList<RealLocalizable> endPoints = new ArrayList<RealLocalizable>();
-
-			
-			 RandomAccessibleInterval<BitType> Interiorimage =  PairCurrentViewBit.Interiorimage;
-				
-		    double minX = Interiorimage.realMin(0);
-		    double maxX = Interiorimage.realMax(0);
-				
-		    double minY = Interiorimage.realMin(1);
-		    double maxY = Interiorimage.realMax(1);	
-				
-		    double minZ = Interiorimage.realMin(2);
-		    double maxZ = Interiorimage.realMax(2);
-		    
-		    RealPoint startA = new RealPoint(new double[] {minX, minY, minZ});
-		    endPoints.add(startA);
-		    RealPoint startB = new RealPoint(new double[] {minX, maxY, maxZ});
-		    endPoints.add(startB);
-		    RealPoint startC = new RealPoint(new double[] {maxX, maxY, maxZ});
-		    endPoints.add(startC);
-		    RealPoint startD = new RealPoint(new double[] {maxX, minY, minZ});
-		    endPoints.add(startD);
-		    
-		    
-			return endPoints;
-
-		}
-
+	
 		public static RandomAccessibleInterval<BitType> GradientmagnitudeImage(RandomAccessibleInterval<BitType> inputimg) {
 
 			RandomAccessibleInterval<BitType> gradientimg = new ArrayImgFactory<BitType>().create(inputimg, new BitType());

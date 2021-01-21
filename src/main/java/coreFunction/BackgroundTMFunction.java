@@ -38,12 +38,11 @@ public class BackgroundTMFunction extends SwingWorker<Void, Void> {
 			parent.jpb.setIndeterminate(false);
 			if(parent.jpb!=null )
 				utility.ProgressBar.SetProgressBar(parent.jpb, 100 ,
-						"Collected all cells, starting TrackMate");
-			
+						"Starting TrackMate");
 	
 			parent.imp.close();
 			TrackMatePlugIn_ plugin = new TrackMatePlugIn_(parent);
-			plugin.run("threeD");
+			plugin.run(null);
 			
 		}
 
