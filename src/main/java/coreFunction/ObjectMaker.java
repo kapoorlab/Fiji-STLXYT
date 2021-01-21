@@ -24,13 +24,11 @@ public class ObjectMaker implements Runnable {
 
 	public int label;
 	public 	ArrayList<Cellobject> Allcells;
-	public final RandomAccessibleInterval<IntType> Seg ;
 	final InteractiveAnalysis parent;
 	
-	public ObjectMaker(InteractiveAnalysis parent, RandomAccessibleInterval<IntType> Seg, ArrayList<Cellobject> Allcells,int label ) {
+	public ObjectMaker(InteractiveAnalysis parent,  ArrayList<Cellobject> Allcells,int label ) {
 		
 		this.parent = parent;
-		this.Seg = Seg;
 		this.label = label;
         this.Allcells = Allcells;
 		
@@ -45,7 +43,7 @@ public class ObjectMaker implements Runnable {
 		if(parent.FilamentMode == false) {
 		
 		Pair<Regionobject, Regionobject> SmallBigPairCurrentViewBit = FilamentEnder
-				.DualCurrentLabelBinaryImage(Seg, label);
+				.DualCurrentLabelBinaryImage(parent.CurrentViewInt, label);
 		
 		// For
 		List<RealLocalizable> bordercelltruths = DisplayListOverlay.GetCoordinatesBit(SmallBigPairCurrentViewBit.getB().Boundaryimage);
@@ -65,8 +63,9 @@ public class ObjectMaker implements Runnable {
 		
 		if(parent.FilamentMode == true) {
 			
-			
-			
+			FilamentEnder EndSplitPointList = new FilamentEnder(parent, label); 
+			// Initial guess for end points and split points
+			Pair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>> skeletonSplitEndPoints  = EndSplitPointList.displays();
 		}
 		
 		

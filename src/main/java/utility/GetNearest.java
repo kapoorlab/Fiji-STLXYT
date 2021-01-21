@@ -110,15 +110,14 @@ public class GetNearest {
 
 	}
 
-	public static ArrayList<Cellobject> getAllInteriorCells(InteractiveAnalysis parent,
-			final RandomAccessibleInterval<IntType> GreenCellSeg) {
+	public static ArrayList<Cellobject> getAllInteriorCells(InteractiveAnalysis parent) {
 
 		ArrayList<Cellobject> Allcells = new ArrayList<Cellobject>();
 		HashMap<Integer, Boolean> InsideCellList = new HashMap<Integer, Boolean>();
 
 		if (parent.CSVInfoFile.get(parent.thirdDimension) == null) {
 
-			Cursor<IntType> intcursor = Views.iterable(GreenCellSeg).localizingCursor();
+			Cursor<IntType> intcursor = Views.iterable(parent.CurrentViewInt).localizingCursor();
 
 			while (intcursor.hasNext()) {
 
@@ -136,7 +135,7 @@ public class GetNearest {
 			for (Integer labelgreen : InsideCellList.keySet()) {
 				Boolean isInterior = InsideCellList.get(labelgreen);
 				if (isInterior) {
-					tasks.add(Executors.callable(new ObjectMaker(parent, GreenCellSeg, Allcells, labelgreen)));
+					tasks.add(Executors.callable(new ObjectMaker(parent, Allcells, labelgreen)));
 
 				}
 			}

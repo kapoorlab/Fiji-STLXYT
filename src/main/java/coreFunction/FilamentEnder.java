@@ -1,30 +1,18 @@
 package coreFunction;
 
-import java.awt.Color;
-import java.awt.Rectangle;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
-import budDetector.Budregionobject;
-import kalmanGUI.CovistoKalmanPanel;
 import net.imagej.ops.OpService;
 import net.imglib2.Cursor;
-import net.imglib2.Interval;
-import net.imglib2.Localizable;
 import net.imglib2.Point;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
-import net.imglib2.algorithm.neighborhood.DiamondShape;
 import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.type.logic.BitType;
 import net.imglib2.type.numeric.integer.IntType;
@@ -32,61 +20,37 @@ import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
 import net.imglib2.view.Views;
 import pluginTools.InteractiveAnalysis;
-import tracking.BCellobject;
-import tracking.Cellobject;
 import tracking.Regionobject;
 import tracking.Roiobject;
 import utility.Distance;
 import utility.GetNearest;
-import ij.IJ;
 import skeletor.*;
-import ij.gui.OvalRoi;
 
 public class FilamentEnder {
 
 
 	final InteractiveAnalysis parent;
-	final int maxlabel;
-	int percent;
-    ArrayList<Cellobject> celllist = new ArrayList<Cellobject>();
+	int label;
 
 	public FilamentEnder(final InteractiveAnalysis parent, 
-			 ArrayList<Cellobject> celllist,final int maxlabel,
-			final int percent) {
+			final int label) {
 
 		this.parent = parent;
-		this.maxlabel = maxlabel;
-		this.percent = percent;
-
-        this.celllist = celllist;
+        this.label = label;
 	}
 	
-	
 
 	
-    public ArrayList<Cellobject> returnBCellobjectlist(){
-		
-		
-		return celllist;
-	}
-	
-	
-	public void displays() {
+	public Pair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>>  displays() {
 
 		
 		
 		
-		 ArrayList<Roiobject> Allrois = new ArrayList<Roiobject>();
+		ArrayList<Roiobject> Allrois = new ArrayList<Roiobject>();
 		String uniqueID = Integer.toString(parent.thirdDimension);
-		Iterator<Integer> setiter = parent.pixellist.iterator();
 		parent.overlay.clear();
 		
-		while (setiter.hasNext()) {
-
-			percent++;
-			int label = setiter.next();
-
-			if (label > 0) {
+		Pair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>>  currentskel = new ValuePair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>>(null, null);
 
 				
 				ArrayList<Roiobject> currentrois = new ArrayList<Roiobject>();
@@ -123,20 +87,14 @@ public class FilamentEnder {
 				 Collections.sort(truths,comp);
 					 Collections.sort(bodytruths,comp);
 				// Get the center point of each bud
-				
-				if (parent.jpb != null)
-					utility.ProgressBar.SetProgressBar(parent.jpb,
-							100 * (percent) / (parent.thirdDimensionSize + parent.pixellist.size()),
-							"Computing Filament Ends = " + parent.thirdDimension + "/" + parent.thirdDimensionSize + " Total Filaments = "
-									+ (parent.pixellist.size() ));
+			
 				// If we did not compute the skeletons before we compute it for each label
 				if(parent.OvalRois.get(uniqueID)==null) {
 				    
 					
-					
-					List<RealLocalizable> currentskel = SkeletonCreator(PairCurrentViewBit, truths);
-					currentrois = DisplayListOverlay.SkeletonEndDisplay(parent, currentskel, label, parent.Color);
-					FillArrays(currentskel,truths, currentpoint, label);
+					// End and split points
+					currentskel = SkeletonCreator(PairCurrentViewBit, truths);
+					currentrois = DisplayListOverlay.SkeletonEndDisplay(parent, currentskel.getA(), label, parent.Color);
 					
 				}
 				
@@ -144,8 +102,8 @@ public class FilamentEnder {
 				if (parent.OvalRois.get(uniqueID)!=null){
 					
 							ArrayList<Roiobject> rois = 	parent.OvalRois.get(uniqueID);
-							List<RealLocalizable> currentskel = new ArrayList<RealLocalizable>();
-							List<RealLocalizable> rejskel = new ArrayList<RealLocalizable>();
+							ArrayList<RealLocalizable> currentskelA = new ArrayList<RealLocalizable>();
+							ArrayList<RealLocalizable> rejskel = new ArrayList<RealLocalizable>();
 							for (Roiobject currentroi: rois) {
 								
 								if(currentroi.color == parent.Color && currentroi.Label == label) {
@@ -155,7 +113,7 @@ public class FilamentEnder {
 									
 								RealPoint point = new RealPoint(new double[] {LocationX, LocationY});
 								
-								currentskel.add(point);
+								currentskelA.add(point);
 								
 							}
 								
@@ -172,104 +130,128 @@ public class FilamentEnder {
 								
 							}
 							
-							currentrois = DisplayListOverlay.SkeletonEndDisplay(parent, currentskel, label, parent.Color);
+							currentrois = DisplayListOverlay.SkeletonEndDisplay(parent, currentskelA, label, parent.Color);
 							rejrois = DisplayListOverlay.SkeletonEndDisplay(parent, rejskel, label, parent.RemoveColor);
 
-							currentskel.addAll(rejskel);
-							FillArrays(currentskel,truths, currentpoint, label);
+							currentskelA.addAll(rejskel);
+							
+							currentskel = new ValuePair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>>(currentskelA, null);
 				 }
 				 
 				 currentrois.addAll(rejrois);
 				
 				 Allrois.addAll(currentrois);
+				 
+				 
+					parent.OvalRois.put(uniqueID, Allrois);
+
+					parent.imp.updateAndDraw();
+			
+					
+					return currentskel;
 				
 			}
 			
-		}
+		
 	
-		 
-			parent.OvalRois.put(uniqueID, Allrois);
-
-			parent.imp.updateAndDraw();
 	
-	}
+	
 	
 	
 
 	
-	public List<RealLocalizable> SkeletonCreator(Regionobject  PairCurrentViewBit, List<RealLocalizable> truths) {
+	public Pair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>> SkeletonCreator(Regionobject  PairCurrentViewBit, List<RealLocalizable> truths) {
 		
 		
 		// Skeletonize Filaments
 		OpService ops = parent.ij.op();
-		List<RealLocalizable> skeletonEndPoints = new ArrayList<RealLocalizable>();
+		
 		SkeletonCreator<BitType> skelmake = new SkeletonCreator<BitType>(PairCurrentViewBit.Interiorimage, ops);
 		skelmake.setClosingRadius(0);
 		skelmake.run();
 		ArrayList<RandomAccessibleInterval<BitType>> Allskeletons = skelmake.getSkeletons();
 
-		skeletonEndPoints = AnalyzeSkeleton(Allskeletons,truths, ops);
+		Pair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>> skeletonSplitEndPoints  = AnalyzeSkeleton(Allskeletons,truths, ops);
 		
-		return skeletonEndPoints;
-		
-	}
-
-
-
-
-	public void FillArrays(List<RealLocalizable> skeletonEndPoints,
-			List<RealLocalizable> truths, RealLocalizable centerpoint, int label) {
-		
-		for (RealLocalizable budpoints : skeletonEndPoints) {
-
-			pointobject point = new pointobject(centerpoint, truths, skeletonEndPoints,
-					truths.size() * parent.calibrationX, label,
-					new double[] { budpoints.getDoublePosition(0), budpoints.getDoublePosition(1) },
-					parent.thirdDimension, 0);
-
-			pointlist.add(point);
-
-		}
-	
-	          celllist = GetNearest.getAllInteriorCells(parent, parent.CurrentViewInt);
-
+		return skeletonSplitEndPoints;
 		
 	}
 
-	public static ArrayList<RealLocalizable> AnalyzeSkeleton(ArrayList<RandomAccessibleInterval<BitType>> Allskeletons, List<RealLocalizable> truths,
+
+
+
+
+	public static Pair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>> AnalyzeSkeleton(ArrayList<RandomAccessibleInterval<BitType>> Allskeletons, List<RealLocalizable> truths,
 			OpService ops) {
 
 		ArrayList<RealLocalizable> endPoints = new ArrayList<RealLocalizable>();
+		
+		ArrayList<RealLocalizable> splitPoints = new ArrayList<RealLocalizable>();
 
 		for (RandomAccessibleInterval<BitType> skeleton : Allskeletons) {
 
 			SkeletonAnalyzer<BitType> skelanalyze = new SkeletonAnalyzer<BitType>(skeleton, ops);
 			RandomAccessibleInterval<BitType> Ends = skelanalyze.getEndpoints();
+			RandomAccessibleInterval<BitType> Splits = skelanalyze.getBranchpoints();
 
+			
 			Cursor<BitType> skelcursor = Views.iterable(Ends).localizingCursor();
 			while (skelcursor.hasNext()) {
 
 				skelcursor.next();
 
 				RealPoint addPoint = new RealPoint(skelcursor);
-				if (skelcursor.get().getInteger() > 0) {
-					
-					
+				if (skelcursor.get().getInteger() > 0) 
 					endPoints.add(addPoint);
-
-				}
-
 			}
 			
+			Cursor<BitType> skelsplitcursor = Views.iterable(Splits).localizingCursor();
+			while (skelsplitcursor.hasNext()) {
+
+				skelsplitcursor.next();
+
+				RealPoint addPoint = new RealPoint(skelsplitcursor);
+				if (skelsplitcursor.get().getInteger() > 0) 
+					splitPoints.add(addPoint);
+			}
 			
 		}
 		
+		//Remove close lying split points
+		ArrayList<RealLocalizable> CleansplitPoints = RemoveClose( splitPoints, 20);
 		
-		return endPoints;
-
+		Pair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>> EndSplit = new ValuePair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>>(endPoints, CleansplitPoints);
+		
+		return EndSplit;
 	}
 	
+	
+	public static ArrayList<RealLocalizable> RemoveClose(ArrayList<RealLocalizable> endPoints, double mindist) {
+		
+		ArrayList<RealLocalizable> farPoints = new ArrayList<RealLocalizable>(endPoints);
+		
+		
+		for(RealLocalizable addPoint:endPoints) {
+			
+			
+			farPoints.remove(addPoint);
+			
+			RealLocalizable closestdynamicskel = GetNearest.getNearestskelPoint(farPoints, addPoint);
+			
+			farPoints.add(addPoint);
+			
+			
+			double closestGrowthPoint = Distance.DistanceSqrt(addPoint, closestdynamicskel);
+			if (closestGrowthPoint < mindist && closestGrowthPoint!=0)
+				farPoints.remove(closestdynamicskel);
+				
+		}
+		
 
+		return farPoints;
+		
+	}
+	
 	
 	
 
@@ -409,9 +391,9 @@ public class FilamentEnder {
 		// Gradient image gives us the bondary points
 		RandomAccessibleInterval<BitType> smallgradimg = GradientmagnitudeImage(smalloutimg);
 		RandomAccessibleInterval<BitType> gradimg = GradientmagnitudeImage(outimg);
-		Budregionobject smallregion = new Budregionobject(smallgradimg, smalloutimg, min,  size);
-		Budregionobject region = new Budregionobject(gradimg, outimg, min,  size);
-		return new ValuePair<Budregionobject, Budregionobject>( smallregion, region);
+		Regionobject smallregion = new Regionobject(smallgradimg, smalloutimg, min,  size);
+		Regionobject region = new Regionobject(gradimg, outimg, min,  size);
+		return new ValuePair<Regionobject, Regionobject>( smallregion, region);
 
 	}
 	

@@ -52,6 +52,7 @@ import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
 import pluginTools.simplifiedio.SimplifiedIO;
 import tracking.BCellobject;
+import tracking.Cellobject;
 
 public class FileChooser extends JPanel {
 
@@ -85,7 +86,7 @@ public class FileChooser extends JPanel {
 	public JComboBox<String> ChoosesuperImage;
 	public JComboBox<String> ChooseoriginalImage;
 	public JButton Done = new JButton("Start Computing");
-	public HashMap<Integer, ArrayList<BCellobject>> CSVFileInfo = new HashMap<Integer, ArrayList<BCellobject>>(); 
+	public HashMap<Integer, ArrayList<Cellobject>> CSVFileInfo = new HashMap<Integer, ArrayList<Cellobject>>(); 
 	
 	public String chooseCellSegstring = "2D + time Segmentation Image";
 	public Border chooseCellSeg = new CompoundBorder(new TitledBorder(chooseCellSegstring), new EmptyBorder(c.insets));

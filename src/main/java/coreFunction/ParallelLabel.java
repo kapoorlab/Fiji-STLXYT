@@ -28,7 +28,7 @@ public class ParallelLabel implements Runnable {
 	public void run() {
 		  
 	
-	    Currentcelllist  = GetNearest.getAllInteriorCells(parent, parent.CurrentViewInt);
+	    Currentcelllist  = GetNearest.getAllInteriorCells(parent);
 	      
 		
 		
