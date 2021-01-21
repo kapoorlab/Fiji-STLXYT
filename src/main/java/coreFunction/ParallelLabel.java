@@ -36,7 +36,6 @@ public class ParallelLabel  {
 			e.printStackTrace();
 		}
 	      
-		System.out.println("Totalpoints" + Currentcelllist.size());
      	for(Cellobject currentbudcell:Currentcelllist) {
 			
      		
