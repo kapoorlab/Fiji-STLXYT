@@ -235,9 +235,9 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 			if (Segoriginalimg!=null){
 
 				// Convert input binary image into integer labelled image
-				Segoriginalimg = LabelSegmentationImage(Segoriginalimg);
+				
 				CurrentViewInt = LabPluginutility.Slicer.getCurrentLabView(Segoriginalimg, thirdDimension, thirdDimensionSize);
-			
+				CurrentViewInt = LabelSegmentationImage(CurrentViewInt);
 				
 			}
 			
@@ -321,9 +321,12 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 				String TID = Integer.toString(thirdDimension);
 				AccountedT.put(TID, thirdDimension);
 				CurrentView = LabPluginutility.Slicer.getCurrentLabView(originalimg, thirdDimension, thirdDimensionSize);
-				if (Segoriginalimg!=null)
+				if (Segoriginalimg!=null) {
 				CurrentViewInt = LabPluginutility.Slicer.getCurrentLabView(Segoriginalimg, thirdDimension,
 						thirdDimensionSize);
+				CurrentViewInt = LabelSegmentationImage(CurrentViewInt);
+				}
+				
                 else {
 					
 					CurrentViewInt = null;

@@ -39,7 +39,6 @@ public class ObjectMaker implements Runnable {
 	public void run() {
 
 		//If you have cells collect all their properties and make the cell object
-		
 		if(parent.FilamentMode == false) {
 		
 		Pair<Regionobject, Regionobject> SmallBigPairCurrentViewBit = FilamentEnder

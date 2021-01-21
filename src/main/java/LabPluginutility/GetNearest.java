@@ -110,7 +110,7 @@ public class GetNearest {
 
 	}
 
-	public static ArrayList<Cellobject> getAllInteriorCells(InteractiveAnalysis parent) {
+	public static ArrayList<Cellobject> getAllInteriorCells(InteractiveAnalysis parent) throws InterruptedException {
 
 		ArrayList<Cellobject> Allcells = new ArrayList<Cellobject>();
 		HashMap<Integer, Boolean> InsideCellList = new HashMap<Integer, Boolean>();
@@ -127,9 +127,11 @@ public class GetNearest {
 				intcursor.fwd();
 
 				int labelyellow = intcursor.get().get();
-				if (labelyellow > 0)
+				if (labelyellow > 0) {
 					InsideCellList.put(labelyellow, true);
-
+                    
+					
+				}
 			}
 		
 			for (Integer labelgreen : InsideCellList.keySet()) {
@@ -140,16 +142,11 @@ public class GetNearest {
 				}
 			}
 
-			try {
+		
 
 				taskExecutor.invokeAll(tasks);
 
-			} catch (InterruptedException e1) {
-
-				System.out.println(e1 + " Task not executed");
-
-			}
-			parent.CSVInfoFile.put(parent.thirdDimension, Allcells);
+	parent.CSVInfoFile.put(parent.thirdDimension, Allcells);
 
 		}
 

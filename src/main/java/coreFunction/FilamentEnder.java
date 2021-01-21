@@ -48,7 +48,7 @@ public class FilamentEnder {
 		
 		ArrayList<Roiobject> Allrois = new ArrayList<Roiobject>();
 		String uniqueID = Integer.toString(parent.thirdDimension);
-		
+		System.out.println("Label:" + label + " time" + parent.thirdDimension);
 		
 		Pair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>>  currentskel = new ValuePair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>>(null, null);
 
@@ -386,7 +386,7 @@ public class FilamentEnder {
 		
 		double size = Math.sqrt(Distance.DistanceSq(minVal, maxVal));
         
-	    RandomAccessibleInterval<BitType> smalloutimg = Views.offsetInterval(outimg, minVal, maxVal);
+	    RandomAccessibleInterval<BitType> smalloutimg = Views.interval(outimg, minVal, maxVal);
 		Point min = new Point(minVal.length);
 		// Gradient image gives us the bondary points
 		RandomAccessibleInterval<BitType> smallgradimg = GradientmagnitudeImage(smalloutimg);

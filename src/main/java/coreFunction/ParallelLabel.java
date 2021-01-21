@@ -29,7 +29,12 @@ public class ParallelLabel implements Runnable {
 	public void run() {
 		  
 	
-	    Currentcelllist  = GetNearest.getAllInteriorCells(parent);
+	    try {
+			Currentcelllist  = GetNearest.getAllInteriorCells(parent);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	      
 		
      	for(Cellobject currentbudcell:Currentcelllist) {
