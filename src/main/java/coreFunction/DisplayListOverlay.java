@@ -96,6 +96,7 @@ public class DisplayListOverlay {
 				parent.overlay.add(points);
 				Roiobject roicolor = new Roiobject(color, points, new RealPoint(new double[] {X,Y}), label);
 		        		Allrois.add(roicolor);
+		        		
 			}
 		  parent.imp.updateAndDraw();
 		return Allrois;

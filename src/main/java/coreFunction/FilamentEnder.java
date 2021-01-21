@@ -48,7 +48,7 @@ public class FilamentEnder {
 		
 		ArrayList<Roiobject> Allrois = new ArrayList<Roiobject>();
 		String uniqueID = Integer.toString(parent.thirdDimension);
-		parent.overlay.clear();
+		
 		
 		Pair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>>  currentskel = new ValuePair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>>(null, null);
 
@@ -218,9 +218,9 @@ public class FilamentEnder {
 		}
 		
 		//Remove close lying split points
-		ArrayList<RealLocalizable> CleansplitPoints = RemoveClose( splitPoints, 20);
-		
-		Pair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>> EndSplit = new ValuePair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>>(endPoints, CleansplitPoints);
+		ArrayList<RealLocalizable> CleansplitPoints = RemoveClose( splitPoints, 10);
+		ArrayList<RealLocalizable> CleanendPoints = RemoveClose( endPoints, 10);
+		Pair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>> EndSplit = new ValuePair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>>(CleanendPoints, CleansplitPoints);
 		
 		return EndSplit;
 	}

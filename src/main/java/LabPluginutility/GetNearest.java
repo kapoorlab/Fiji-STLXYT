@@ -118,7 +118,10 @@ public class GetNearest {
 		if (parent.CSVInfoFile.get(parent.thirdDimension) == null) {
 
 			Cursor<IntType> intcursor = Views.iterable(parent.CurrentViewInt).localizingCursor();
-
+			int nThreads = Runtime.getRuntime().availableProcessors();
+			// set up executor service
+			final ExecutorService taskExecutor = Executors.newFixedThreadPool(nThreads);
+			List<Callable<Object>> tasks = new ArrayList<Callable<Object>>();
 			while (intcursor.hasNext()) {
 
 				intcursor.fwd();
@@ -128,10 +131,7 @@ public class GetNearest {
 					InsideCellList.put(labelyellow, true);
 
 			}
-			int nThreads = Runtime.getRuntime().availableProcessors();
-			// set up executor service
-			final ExecutorService taskExecutor = Executors.newFixedThreadPool(nThreads);
-			List<Callable<Object>> tasks = new ArrayList<Callable<Object>>();
+		
 			for (Integer labelgreen : InsideCellList.keySet()) {
 				Boolean isInterior = InsideCellList.get(labelgreen);
 				if (isInterior) {

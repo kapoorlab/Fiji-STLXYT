@@ -76,11 +76,11 @@ public class BCellobject extends AbstractEuclideanSpace implements RealLocalizab
 			putFeature( ENDPOSITION_Y, Double.valueOf( currentcell.EndLocation.getDoublePosition(1) ) );
 			putFeature( POSITION_X, Double.valueOf( 0.5 * (currentcell.StartLocation.getDoublePosition(0) + currentcell.EndLocation.getDoublePosition(0) ) ) );
 			putFeature( POSITION_Y, Double.valueOf( 0.5 * (currentcell.StartLocation.getDoublePosition(1) + currentcell.EndLocation.getDoublePosition(1)  )) );
-			putFeature( POSITION_Z, Double.valueOf( 0.5 * (currentcell.StartLocation.getDoublePosition(2) + currentcell.EndLocation.getDoublePosition(2)  )) );
+			putFeature( POSITION_Z, Double.valueOf(1 ) );
 			putFeature( Radi_X, Double.valueOf( currentcell.extents[0] ) );
 			putFeature( Radi_Y, Double.valueOf( currentcell.extents[1] ) );
-			putFeature( Radi_Z, Double.valueOf( currentcell.extents[2] ) );
-			putFeature( Size, (Double.valueOf( currentcell.extents[0] ) + Double.valueOf( currentcell.extents[1] ) + Double.valueOf(currentcell.extents[2])  )/3 );
+			putFeature( Radi_Z, Double.valueOf(1) );
+			putFeature( Size, (Double.valueOf( currentcell.extents[0] ) + Double.valueOf( currentcell.extents[1] ) + 1  )/3 );
 			putFeature( INTENSITY, Double.valueOf( currentcell.totalIntensity ) );
 			putFeature( POSITION_T, Double.valueOf( time) );
 			
