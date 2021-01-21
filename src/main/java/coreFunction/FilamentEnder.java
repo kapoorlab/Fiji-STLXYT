@@ -358,8 +358,8 @@ public class FilamentEnder {
 
 		// Go through the whole image and add every pixel, that belongs to
 		// the currently processed label
-		long[] minVal = { Intimg.max(0), Intimg.max(1), Intimg.max(2) };
-		long[] maxVal = { Intimg.min(0), Intimg.min(1),Intimg.min(2) };
+		long[] minVal = { Intimg.max(0), Intimg.max(1) };
+		long[] maxVal = { Intimg.min(0), Intimg.min(1) };
 
 		while (intCursor.hasNext()) {
 			intCursor.fwd();

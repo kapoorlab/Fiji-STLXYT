@@ -64,13 +64,11 @@ public class ObjectMaker implements Runnable {
 		if(parent.FilamentMode == true) {
 			Pair<Regionobject, Regionobject> SmallBigPairCurrentViewBit = FilamentEnder
 					.DualCurrentLabelBinaryImage(parent.CurrentViewInt, label);
-			
 			// For
 			double cellArea = Volume(SmallBigPairCurrentViewBit.getA().Interiorimage);
 			double cellPerimeter = Volume(SmallBigPairCurrentViewBit.getA().Boundaryimage);
 			double intensity = getIntensity(parent, SmallBigPairCurrentViewBit.getA().Interiorimage);
 			double[] Extents = radiusXY( SmallBigPairCurrentViewBit.getA().Boundaryimage);
-			
 			
 			FilamentEnder EndSplitPointList = new FilamentEnder(parent, label); 
 			// Initial guess for end points and split points

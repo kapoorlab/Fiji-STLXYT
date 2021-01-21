@@ -106,7 +106,7 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 	public String AddDot = "B";
 	public MouseMotionListener tvml;
 	public int borderexpand = 100;
-	public int Dotsize = 6;
+	public int Dotsize = 2;
 	public Color RemoveColor = new Color(255,0,0); //Color.RED;
 	public Color Color = new Color(255,192,203);
 	

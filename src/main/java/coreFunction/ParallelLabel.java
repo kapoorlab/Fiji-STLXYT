@@ -36,6 +36,8 @@ public class ParallelLabel implements Runnable {
      	for(Cellobject currentbudcell:Currentcelllist) {
 			
 			BCellobject budncell = new BCellobject(currentbudcell, parent.thirdDimension);
+			
+			System.out.println(budncell.getDoublePosition(0) + " " + budncell.getDoublePosition(1) + " " + parent.thirdDimension);
             parent.cells.add(budncell, parent.thirdDimension);  
             
 		
