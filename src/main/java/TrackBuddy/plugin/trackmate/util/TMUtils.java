@@ -298,7 +298,7 @@ public class TMUtils
 			}
 			else if ( img.axis( d ).type() == Axes.Z )
 			{
-				calibration[ 2 ] = parent.calibrationZ;
+				calibration[ 2 ] = 1;
 			}
 		}
 		return calibration;
@@ -311,7 +311,7 @@ public class TMUtils
 		calibration[ 1 ] = parent.calibrationY;
 		if ( imp.getNSlices() > 1 )
 		{
-			calibration[ 2 ] = parent.calibrationZ;
+			calibration[ 2 ] = 1;
 		}
 		return calibration;
 	}

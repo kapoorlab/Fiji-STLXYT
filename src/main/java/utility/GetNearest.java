@@ -42,8 +42,8 @@ public class GetNearest {
 
 		for (Cellobject currentcell : InteriorCells) {
 
-			Localizable cellcenter = currentcell.StartLocation;
-			intranac.setPosition(cellcenter);
+			RealLocalizable cellcenter = currentcell.StartLocation;
+			intranac.setPosition((Localizable) cellcenter);
 			int label = intranac.get().get();
 
 			if (label == currentlabel) {
@@ -251,78 +251,5 @@ public class GetNearest {
 		return KDtreeroi;
 	}
 
-	public static RealLocalizable getNearestPoint(final InteractiveAnalysis parent, RealLocalizable ClickedPoint) {
-
-		RealLocalizable KDtreeroi = null;
-
-		ArrayList<RealLocalizable> Allrois = parent.AllBudcenter;
-		final List<RealPoint> targetCoords = new ArrayList<RealPoint>(Allrois.size());
-		final List<FlagNode<RealLocalizable>> targetNodes = new ArrayList<FlagNode<RealLocalizable>>(Allrois.size());
-		for (int index = 0; index < Allrois.size(); ++index) {
-
-			RealLocalizable r = Allrois.get(index);
-
-			targetCoords.add(new RealPoint(r));
-
-			targetNodes.add(new FlagNode<RealLocalizable>(Allrois.get(index)));
-
-		}
-
-		if (targetNodes.size() > 0 && targetCoords.size() > 0) {
-
-			final KDTree<FlagNode<RealLocalizable>> Tree = new KDTree<FlagNode<RealLocalizable>>(targetNodes,
-					targetCoords);
-
-			final NNFlagsearchKDtree<RealLocalizable> Search = new NNFlagsearchKDtree<RealLocalizable>(Tree);
-
-			final RealLocalizable source = ClickedPoint;
-			final RealPoint sourceCoords = new RealPoint(source);
-			Search.search(sourceCoords);
-			final FlagNode<RealLocalizable> targetNode = Search.getSampler().get();
-
-			KDtreeroi = targetNode.getValue();
-
-		}
-
-		return KDtreeroi;
-
-	}
-
-	public static RealLocalizable getNearestBudcenter(final InteractiveAnalysis parent, RealLocalizable ClickedPoint) {
-
-		RealLocalizable KDtreeroi = null;
-
-		ArrayList<RealLocalizable> Allrois = parent.ChosenBudcenter;
-		final List<RealPoint> targetCoords = new ArrayList<RealPoint>(Allrois.size());
-		final List<FlagNode<RealLocalizable>> targetNodes = new ArrayList<FlagNode<RealLocalizable>>(Allrois.size());
-		for (int index = 0; index < Allrois.size(); ++index) {
-
-			RealLocalizable r = Allrois.get(index);
-
-			targetCoords.add(new RealPoint(r));
-
-			targetNodes.add(new FlagNode<RealLocalizable>(Allrois.get(index)));
-
-		}
-
-		if (targetNodes.size() > 0 && targetCoords.size() > 0) {
-
-			final KDTree<FlagNode<RealLocalizable>> Tree = new KDTree<FlagNode<RealLocalizable>>(targetNodes,
-					targetCoords);
-
-			final NNFlagsearchKDtree<RealLocalizable> Search = new NNFlagsearchKDtree<RealLocalizable>(Tree);
-
-			final RealLocalizable source = ClickedPoint;
-			final RealPoint sourceCoords = new RealPoint(source);
-			Search.search(sourceCoords);
-			final FlagNode<RealLocalizable> targetNode = Search.getSampler().get();
-
-			KDtreeroi = targetNode.getValue();
-
-		}
-
-		return KDtreeroi;
-
-	}
-
+	
 }
