@@ -20,6 +20,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -66,7 +67,11 @@ import net.imglib2.Cursor;
 import net.imglib2.Interval;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;
+import net.imglib2.algorithm.labeling.ConnectedComponents;
+import net.imglib2.algorithm.labeling.ConnectedComponents.StructuringElement;
+import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.img.display.imagej.ImageJFunctions;
+import net.imglib2.roi.labeling.ImgLabeling;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Intervals;
@@ -225,11 +230,16 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 
 			setTime(thirdDimension);
 			CurrentView = utility.Slicer.getCurrentView(originalimg, thirdDimension, thirdDimensionSize);
-			if (Segoriginalimg!=null)
-			CurrentViewInt = utility.Slicer.getCurrentView(Segoriginalimg, thirdDimension, thirdDimensionSize);
 			
-			// Convert the segmentation image into integer labelled image
-			       
+			
+			if (Segoriginalimg!=null){
+
+				// Convert input binary image into integer labelled image
+				Segoriginalimg = LabelSegmentationImage(Segoriginalimg);
+				CurrentViewInt = utility.Slicer.getCurrentView(Segoriginalimg, thirdDimension, thirdDimensionSize);
+			
+				
+			}
 			
 			imp = ImageJFunctions.show(CurrentView, "Original Image");
 			imp.setTitle("Active Image" + " " + "time point : " + thirdDimension);
@@ -257,7 +267,41 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 
 	}
 	
-	
+	public RandomAccessibleInterval<IntType> LabelSegmentationImage(RandomAccessibleInterval<IntType> SegmentationImage) {
+		
+		   long[] dims = new long[SegmentationImage.numDimensions()];
+		   SegmentationImage.dimensions(dims);
+	       RandomAccessibleInterval<IntType> indexImg = ArrayImgs.ints(dims);
+	       RandomAccessibleInterval<IntType> LabelImage =ArrayImgs.ints(dims);	
+	       ImgLabeling<Integer, IntType> labeling = new ImgLabeling<>(indexImg);
+	       Iterator<Integer> labels = new Iterator<Integer>()
+	      {
+	          private int i = 1;
+
+	          @Override
+	          public boolean hasNext()
+	          {
+	              return true;
+	          }
+
+	          @Override
+	          public Integer next()
+	          {
+	              return i++;
+	          }
+
+	          @Override
+	          public void remove()
+	          {}
+	      };
+	      
+	      ConnectedComponents.labelAllConnectedComponents(SegmentationImage, labeling, labels, StructuringElement.FOUR_CONNECTED);
+	      
+		  LabelImage = labeling.getIndexImg();
+			
+	      return LabelImage;		
+			
+		}
 
 	public void updatePreview(final ValueChange change) {
 
@@ -273,7 +317,6 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 		       
 		        // create a view on the source with this interval
 		      
-			if (ndims == 3) {
 				imp.setTitle("Active Image" + " " + "time point : " + thirdDimension);
 				String TID = Integer.toString(thirdDimension);
 				AccountedT.put(TID, thirdDimension);
@@ -304,10 +347,6 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 					imp.updateAndDraw();
 
 				}
-			}
-
-
-
 		}
 
 	}
