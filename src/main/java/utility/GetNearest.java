@@ -109,70 +109,8 @@ public class GetNearest {
 
 	}
 
-	public static ArrayList<Cellobject> getAllInteriorCells(InteractiveAnalysis parent,
-			final RandomAccessibleInterval<IntType> CurrentViewInt,
-			final RandomAccessibleInterval<IntType> CurrentViewYellowInt) {
 
-		Cursor<IntType> intcursor = Views.iterable(CurrentViewYellowInt).localizingCursor();
-		ArrayList<Cellobject> Allcells = new ArrayList<Cellobject>();
-		HashMap<Integer, Boolean> InsideCellList = new HashMap<Integer, Boolean>();
-		RandomAccess<IntType> budintran = CurrentViewInt.randomAccess();
-		// Select all yellow cells
-
-		while (intcursor.hasNext()) {
-
-			intcursor.fwd();
-			budintran.setPosition(intcursor);
-			int labelyellow = intcursor.get().get();
-			int label = budintran.get().get();
-			InsideCellList.put(labelyellow, false);
-			if (label > 0)
-				InsideCellList.put(labelyellow, true);
-
-		}
-
-		for (Integer labelyellow : InsideCellList.keySet()) {
-			Boolean isInterior = InsideCellList.get(labelyellow);
-
-			if (isInterior) {
-				Regionobject PairCurrentViewBit = TrackEachBud.BudCurrentLabelBinaryImage(CurrentViewYellowInt,
-						labelyellow);
-
-				// For each bud get the list of points
-				List<RealLocalizable> bordercelltruths = DisplayListOverlay
-						.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
-
-				for (RealLocalizable insidetruth : bordercelltruths) {
-
-					Integer xPts = (int) insidetruth.getFloatPosition(0);
-					Integer yPts = (int) insidetruth.getFloatPosition(1);
-					OvalRoi points = new OvalRoi(xPts, yPts, 2, 2);
-					points.setStrokeColor(Color.RED);
-					points.setStrokeWidth(2);
-					parent.overlay.add(points);
-					parent.imp.updateAndDraw();
-				}
-
-				double cellArea = Volume(PairCurrentViewBit.Boundaryimage);
-				double cellPerimeter = Volume(PairCurrentViewBit.Boundaryimage);
-				Localizable cellcenterpoint = budDetector.Listordering.getIntMean3DCord(bordercelltruths);
-				double intensity = getIntensity(parent, PairCurrentViewBit.Boundaryimage);
-				double[] Extents = radiusXY(PairCurrentViewBit.Boundaryimage);
-
-				Cellobject insidecells = new Cellobject(cellcenterpoint, parent.fourthDimension, labelyellow,
-						intensity, cellArea, cellPerimeter, Extents);
-				Allcells.add(insidecells);
-
-			}
-			
-			parent.CSVGreen.put(parent.thirdDimension, Allcells);
-		}
-
-		return Allcells;
-
-	}
-
-	public static ArrayList<Cellobject> getAllInterior3DCells(InteractiveAnalysis parent, final RandomAccessibleInterval<IntType> GreenCellSeg) {
+	public static ArrayList<Cellobject> getAllInteriorCells(InteractiveAnalysis parent, final RandomAccessibleInterval<IntType> GreenCellSeg) {
 
 		
 		ArrayList<Cellobject> Allcells = new ArrayList<Cellobject>();

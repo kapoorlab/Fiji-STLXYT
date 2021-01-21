@@ -24,5 +24,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="/MasterPanels"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Fiji-FuncTra"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
