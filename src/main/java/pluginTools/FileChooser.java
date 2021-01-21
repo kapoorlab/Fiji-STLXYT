@@ -59,7 +59,7 @@ public class FileChooser extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public JFrame Cardframe = new JFrame("Our Lab Plugin");
+	public JFrame Cardframe = new JFrame("Our 2D + Time World Lab Plugin");
 	public JPanel panelCont = new JPanel();
 	public JPanel Panelfileoriginal = new JPanel();
 	
@@ -84,7 +84,7 @@ public class FileChooser extends JPanel {
 	public JComboBox<String> ChooseImage;
 	public JComboBox<String> ChoosesuperImage;
 	public JComboBox<String> ChooseoriginalImage;
-	public JButton Done = new JButton("Collect Cells and Start Computing");
+	public JButton Done = new JButton("Start Computing");
 	public HashMap<Integer, ArrayList<BCellobject>> CSVFileInfo = new HashMap<Integer, ArrayList<BCellobject>>(); 
 	
 	public String chooseCellSegstring = "2D + time Segmentation Image";
@@ -155,7 +155,7 @@ public class FileChooser extends JPanel {
 		inputFieldcalY = new TextField(5);
 		inputFieldcalY.setText("1");
 
-		inputLabelcalT = new Label("Pixel calibration in T (min)");
+		inputLabelcalT = new Label("Pixel calibration in T (sec/min)");
 		FieldinputLabelcalT = new TextField(5);
 		FieldinputLabelcalT.setText("1");
 		panelFirst.setLayout(layout);

@@ -81,7 +81,7 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 
 	private static final long serialVersionUID = 1L;
 	public String usefolder = IJ.getDirectory("imagej");
-	public String addToName = "LabPlugin_";
+	public String addToName = "LabPlugin2DWorld_";
 	public String inputstring;
 	public final int scrollbarSize = 1000;
 	public Set<Integer> pixellist;
@@ -91,7 +91,6 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 	
 	public RandomAccessibleInterval<FloatType> CurrentView;
 	public RandomAccessibleInterval<IntType> CurrentViewInt;
-	public RandomAccessibleInterval<IntType> CurrentViewYellowInt;
 	
 	public HashMap<String, ArrayList<Roiobject>> OvalRois = new HashMap<String, ArrayList<Roiobject>>();
 	public final String NameA;
@@ -106,53 +105,30 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 	public Color RemoveColor = new Color(255,0,0); //Color.RED;
 	public Color Color = new Color(255,192,203);
 	
-	public HashMap<String, Integer> LastTime;
 	public int[] Clickedpoints;
 	public HashMap<String, Integer> AccountedT;
-	public HashMap<String, Double> TrackMeanVelocitylist;
-	public HashMap<String, Double> TrackMaxVelocitylist;
-	public HashMap<Integer, HashMap<Integer, Double>> VelocityMap;
-
 	public HashMap<String, ArrayList<BCellobject>> Allcells;
 	public Overlay overlay;
 	public ImagePlus imp;
 	public String selectedID;
-	public boolean mouseremoved = false;
-	public boolean Analysis = true;
 	public int row;
 	public int tablesize;
-	public RealLocalizable Refcord;
-	public HashMap<String, RealLocalizable> AllRefcords;
-	public ArrayList<RealLocalizable> Allcenter;
-	public ArrayList<RealLocalizable> Chosencenter;
-	public HashMap<String, RealLocalizable> SelectedAllRefcords;
-	public int thirdDimension;
-	public int fourthDimension;
 	public int thirdDimensionSize;
 	public ImagePlus impA;
 	public int rowchoice;
-	public Frame jFreeChartFrameRate;
-	public int maxframegap = 30;
+	public int thirdDimension = 1;
 	public int thirdDimensionslider = 1;
 	public int thirdDimensionsliderInit = 1;
-	public int fourthDimensionslider = 1;
-	public int fourthDimensionsliderInit = 1;
-	public int fourthDimensionSize;
 	public JProgressBar jpb;
 	public ArrayList<int[]> ZTRois;
 	public HashMap<Integer, ArrayList<BCellobject>> CSVInfoFile = new HashMap<Integer, ArrayList<BCellobject>>();
 	public MouseMotionListener ml;
-	public ImagePlus resultimp;
 	public ImageJ ij;
 	public double calibrationX;
 	public double calibrationY;
-	public double calibrationZ;
 	public double timecal;
 	public File saveFile;
 	public final File defaultDirectory;
-	public RandomAccessibleInterval<IntType> SegYelloworiginalimg;
-	public RandomAccessibleInterval<IntType> SegRedoriginalimg;
-	public RandomAccessibleInterval<IntType> SegGreenoriginalimg;
 	public BCellobjectCollection cells = new BCellobjectCollection();
 	public HashMap<Integer, Integer> IDlist = new HashMap<Integer, Integer>();
 	public HashMap<String, BCellobject> Finalresult;
@@ -230,14 +206,8 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 	@Override
 	public void run(String arg0) {
 
-		LastTime = new HashMap<String, Integer>();
-		AllRefcords = new HashMap<String, RealLocalizable>();
-		Allcenter = new ArrayList<RealLocalizable>();
-		Chosencenter = new ArrayList<RealLocalizable>();
 		Finalresult = new HashMap<String, BCellobject>();
 		ZTRois = new ArrayList<int[]>();
-		VelocityMap = new HashMap<Integer, HashMap<Integer, Double>>();
-		SelectedAllRefcords = new HashMap<String, RealLocalizable>();
 		AccountedT = new HashMap<String, Integer>();
 		jpb = new JProgressBar();
 		nf = NumberFormat.getInstance(Locale.ENGLISH);
@@ -252,24 +222,26 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 			thirdDimensionSize = (int) originalimg.dimension(2);
 			AutostartTime = thirdDimension;
 			AutoendTime = thirdDimensionSize;
-			maxframegap = thirdDimensionSize / 4;
 
 			setTime(thirdDimension);
 			CurrentView = utility.Slicer.getCurrentView(originalimg, thirdDimension, thirdDimensionSize);
 			if (Segoriginalimg!=null)
 			CurrentViewInt = utility.Slicer.getCurrentView(Segoriginalimg, thirdDimension, thirdDimensionSize);
-			 
+			
+			// Convert the segmentation image into integer labelled image
 			       
 			
 			imp = ImageJFunctions.show(CurrentView, "Original Image");
 			imp.setTitle("Active Image" + " " + "time point : " + thirdDimension);
 
 
+			// Switch to either start the Lab specific plugin Card Farame
 			if(TrackMate == false) {
 				//StartNonTMDisplayer();
 				Card();
 			}
 			
+			// Or to collect the cells/ filament end points and start the trackmate plugin
 			else {
 				
 				StartTMDisplayer(FilamentMode);
@@ -282,7 +254,6 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 		panelFirst.repaint();
 		panelFirst.validate();
 		saveFile = new java.io.File(".");
-		// Get Labelled images
 
 	}
 	
@@ -375,9 +346,6 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 				for (int i = 0; i < pixels.length; ++i)
 				
 					pixels[i] = c.next().get();
-
-		
-
 			imp.updateAndDraw();
 
 		}
@@ -404,8 +372,6 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 	public Label autoTstart, autoTend;
 	public TextField startT, endT;
 	public Label timeText = new Label("Current T = " + 1, Label.CENTER);
-	
-	public Label inputZ = new Label("Current Z = " + 1, Label.CENTER );
 
 	public Label thirdexplain = new Label("text", Label.CENTER);
 	public Label fourthexplain = new Label("Some text", Label.CENTER);
