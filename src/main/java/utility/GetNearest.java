@@ -10,6 +10,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import coreFunction.ObjectMaker;
 import ij.IJ;
 import ij.gui.OvalRoi;
 import ij.gui.Roi;
@@ -33,7 +34,7 @@ import tracking.Cellobject;
 public class GetNearest {
 	public static ArrayList<Cellobject> getLabelInteriorCells(InteractiveAnalysis parent,
 			final RandomAccessibleInterval<IntType> CurrentViewInt, ArrayList<Cellobject> InteriorCells,
-			 int currentlabel) {
+			int currentlabel) {
 
 		ArrayList<Cellobject> AllLabelcells = new ArrayList<Cellobject>();
 
@@ -109,59 +110,56 @@ public class GetNearest {
 
 	}
 
+	public static ArrayList<Cellobject> getAllInteriorCells(InteractiveAnalysis parent,
+			final RandomAccessibleInterval<IntType> GreenCellSeg) {
 
-	public static ArrayList<Cellobject> getAllInteriorCells(InteractiveAnalysis parent, final RandomAccessibleInterval<IntType> GreenCellSeg) {
-
-		
 		ArrayList<Cellobject> Allcells = new ArrayList<Cellobject>();
 		HashMap<Integer, Boolean> InsideCellList = new HashMap<Integer, Boolean>();
 
-		if(parent.CSVInfoFile.get(parent.thirdDimension)==null) {
-			
+		if (parent.CSVInfoFile.get(parent.thirdDimension) == null) {
+
 			Cursor<IntType> intcursor = Views.iterable(GreenCellSeg).localizingCursor();
-			
-			
-		while (intcursor.hasNext()) {
 
-			intcursor.fwd();
+			while (intcursor.hasNext()) {
 
-			int labelyellow = intcursor.get().get();
-            if (labelyellow > 0)  
-			InsideCellList.put(labelyellow, true);
+				intcursor.fwd();
 
-		}
-		int nThreads = Runtime.getRuntime().availableProcessors();
-		// set up executor service
-		final ExecutorService taskExecutor = Executors.newFixedThreadPool(nThreads);
-		List<Callable<Object>> tasks = new ArrayList<Callable<Object>>();
-		for (Integer labelgreen : InsideCellList.keySet()) {
-			Boolean isInterior = InsideCellList.get(labelgreen);
-			if (isInterior) {
-				tasks.add(Executors.callable(new ObjectMaker(parent, GreenCellSeg, Allcells, labelgreen)));
+				int labelyellow = intcursor.get().get();
+				if (labelyellow > 0)
+					InsideCellList.put(labelyellow, true);
 
 			}
+			int nThreads = Runtime.getRuntime().availableProcessors();
+			// set up executor service
+			final ExecutorService taskExecutor = Executors.newFixedThreadPool(nThreads);
+			List<Callable<Object>> tasks = new ArrayList<Callable<Object>>();
+			for (Integer labelgreen : InsideCellList.keySet()) {
+				Boolean isInterior = InsideCellList.get(labelgreen);
+				if (isInterior) {
+					tasks.add(Executors.callable(new ObjectMaker(parent, GreenCellSeg, Allcells, labelgreen)));
+
+				}
+			}
+
+			try {
+
+				taskExecutor.invokeAll(tasks);
+
+			} catch (InterruptedException e1) {
+
+				System.out.println(e1 + " Task not executed");
+
+			}
+			parent.CSVInfoFile.put(parent.thirdDimension, Allcells);
+
 		}
 
-		try {
-
-			taskExecutor.invokeAll(tasks);
-
-		} catch (InterruptedException e1) {
-
-			System.out.println(e1 + " Task not executed");
-
-		}
-		parent.CSVGreen.put(parent.fourthDimension, Allcells);
-		
-		}
-		
 		else {
-			
-			Allcells = parent.CSVGreen.get(parent.fourthDimension);
-			
+
+			Allcells = parent.CSVInfoFile.get(parent.thirdDimension);
+
 		}
-		
-		
+
 		return Allcells;
 
 	}
@@ -212,7 +210,7 @@ public class GetNearest {
 			cursor.fwd();
 
 			intran.setPosition(cursor);
-			if (cursor.get().getInteger() > 0) 
+			if (cursor.get().getInteger() > 0)
 				intensity += intran.get().get();
 
 		}

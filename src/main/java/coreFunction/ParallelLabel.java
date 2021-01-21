@@ -27,13 +27,10 @@ public class ParallelLabel implements Runnable {
 	@Override
 	public void run() {
 		  
-		// If we are only collecting cells we only make a list of cell position and other shape information
-		if(parent.FilamentMode == false) 
+	
 	    Currentcelllist  = GetNearest.getAllInteriorCells(parent, parent.CurrentViewInt);
 	      
-		// If we are collecitng microtubule ends we make a list of the end points to feed into the tracker
-		if(parent.FilamentMode == true)
-			Currentcelllist = GetNearest.getMicrotubuleEnds(parent, parent.CurrentViewInt);
+		
 		
      	for(Cellobject currentbudcell:Currentcelllist) {
 			

@@ -18,19 +18,20 @@ import net.imglib2.view.Views;
 import pluginTools.InteractiveAnalysis;
 import tracking.Cellobject;
 import tracking.Regionobject;
+import utility.Listordering;
 
 public class ObjectMaker implements Runnable {
 
-	public int labelgreen;
+	public int label;
 	public 	ArrayList<Cellobject> Allcells;
-	public final RandomAccessibleInterval<IntType> GreenCellSeg ;
+	public final RandomAccessibleInterval<IntType> Seg ;
 	final InteractiveAnalysis parent;
 	
-	public ObjectMaker(InteractiveAnalysis parent, RandomAccessibleInterval<IntType> GreenCellSeg, ArrayList<Cellobject> Allcells,int labelgreen ) {
+	public ObjectMaker(InteractiveAnalysis parent, RandomAccessibleInterval<IntType> Seg, ArrayList<Cellobject> Allcells,int label ) {
 		
 		this.parent = parent;
-		this.GreenCellSeg = GreenCellSeg;
-		this.labelgreen = labelgreen;
+		this.Seg = Seg;
+		this.label = label;
         this.Allcells = Allcells;
 		
 		
@@ -38,19 +39,36 @@ public class ObjectMaker implements Runnable {
 	
 	@Override
 	public void run() {
+
+		//If you have cells collect all their properties and make the cell object
+		
+		if(parent.FilamentMode == false) {
+		
 		Pair<Regionobject, Regionobject> SmallBigPairCurrentViewBit = TrackEachBud
-				.BudCurrentLabelBinaryImage3D(GreenCellSeg, labelgreen);
+				.CurrentLabelBinaryImage(Seg, label);
 		
-		
-		// For each bud get the list of points
+		// For
 		List<RealLocalizable> bordercelltruths = DisplayListOverlay.GetCoordinatesBit(SmallBigPairCurrentViewBit.getB().Boundaryimage);
 		double cellArea = Volume(SmallBigPairCurrentViewBit.getA().Interiorimage);
 		double cellPerimeter = Volume(SmallBigPairCurrentViewBit.getA().Boundaryimage);
-		Localizable cellcenterpoint = budDetector.Listordering.getIntMean3DCord(bordercelltruths);
+		Localizable cellcenterpoint = Listordering.getIntMean3DCord(bordercelltruths);
 		double intensity = getIntensity(parent, SmallBigPairCurrentViewBit.getA().Interiorimage);
 		double[] Extents = radiusXYZ( SmallBigPairCurrentViewBit.getA().Boundaryimage);
-		Cellobject insideGreencells = new Cellobject(cellcenterpoint, parent.fourthDimension, labelgreen, intensity, cellArea, cellPerimeter, Extents); 
+		
+		
+		Cellobject insideGreencells = new Cellobject(cellcenterpoint, parent.thirdDimension, label, intensity, cellArea, cellPerimeter, Extents); 
 		Allcells.add(insideGreencells);
+		
+		}
+		
+		// If you have filaments collect all the end points and make the cell object
+		
+		if(parent.FilamentMode == true) {
+			
+			
+			
+		}
+		
 		
 	}
 	public static < T extends RealType< T > > double[] radiusXYZ( final RandomAccessibleInterval< T > img)

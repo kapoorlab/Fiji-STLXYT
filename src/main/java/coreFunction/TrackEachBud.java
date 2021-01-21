@@ -196,10 +196,10 @@ public class TrackEachBud {
 	
 
 	
-	public List<RealLocalizable> SkeletonCreator(Budregionobject  PairCurrentViewBit, List<RealLocalizable> truths) {
+	public List<RealLocalizable> SkeletonCreator(Regionobject  PairCurrentViewBit, List<RealLocalizable> truths) {
 		
 		
-		// Skeletonize Bud
+		// Skeletonize Filaments
 		OpService ops = parent.ij.op();
 		List<RealLocalizable> skeletonEndPoints = new ArrayList<RealLocalizable>();
 		SkeletonCreator<BitType> skelmake = new SkeletonCreator<BitType>(PairCurrentViewBit.Interiorimage, ops);
@@ -232,26 +232,15 @@ public class TrackEachBud {
 		Budobject Curreentbud = new Budobject(centerpoint, truths, skeletonEndPoints, parent.thirdDimension, label,
 				truths.size() * parent.calibrationX);
 		Budlist.add(Curreentbud);
-		if (parent.SegYelloworiginalimg != null) {
-	          celllist = GetNearest.getAllInteriorCells(parent, parent.CurrentViewInt, parent.CurrentViewYellowInt);
+		if (parent.Segoriginalimg != null) {
+	          celllist = GetNearest.getAllInteriorCells(parent, parent.CurrentViewInt);
 
 	          // check over this point later
 		//ArrayList<Cellobject> budcelllist = GetNearest.getLabelInteriorCells(parent, CurrentViewInt, celllist, Curreentbud, label);
 		for(Cellobject currentbudcell:celllist) {
 			
-			Localizable centercell = currentbudcell.Location;
-			// For each cell get nearest bud growth point
-			RealLocalizable closestdynamicskel = GetNearest.getNearestskelPoint(skeletonEndPoints, centercell);
-			// Get distance between the center of cell and bud growth point
-			double closestGrowthPoint = Distance.DistanceSqrt(centercell, closestdynamicskel);
-			// For each cell get nearest bud point
-			RealLocalizable closestskel = GetNearest.getNearestskelPoint(truths, centercell);
-			// and the distance
-			double closestBudPoint = Distance.DistanceSqrt(centercell, closestskel);
-			
-			// Make the bud n cell object, each cell has all information about the bud n itself 
-			BCellobject budncell = new BCellobject(Curreentbud, Budpointlist, currentbudcell, closestGrowthPoint, closestBudPoint, parent.thirdDimension);
-            parent.budcells.add(budncell, parent.thirdDimension);  
+			BCellobject budncell = new BCellobject(currentbudcell, parent.thirdDimension);
+            parent.cells.add(budncell, parent.thirdDimension);  
 		}
 		
 		
@@ -391,7 +380,7 @@ public class TrackEachBud {
 
 	}
 	
-	public static Pair<Regionobject,Regionobject> BudCurrentLabelBinaryImage3D(
+	public static Pair<Regionobject,Regionobject> CurrentLabelBinaryImage(
 			RandomAccessibleInterval<IntType> Intimg, int currentLabel) {
 		int n = Intimg.numDimensions();
 		long[] position = new long[n];
@@ -402,8 +391,8 @@ public class TrackEachBud {
 
 		// Go through the whole image and add every pixel, that belongs to
 		// the currently processed label
-		long[] minVal = { Intimg.max(0), Intimg.max(1), Intimg.max(2) };
-		long[] maxVal = { Intimg.min(0), Intimg.min(1),Intimg.min(2) };
+		long[] minVal = { Intimg.max(0), Intimg.max(1)};
+		long[] maxVal = { Intimg.min(0), Intimg.min(1)};
 
 		while (intCursor.hasNext()) {
 			intCursor.fwd();

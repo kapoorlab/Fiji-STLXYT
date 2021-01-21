@@ -126,7 +126,7 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 	public int thirdDimensionsliderInit = 1;
 	public JProgressBar jpb;
 	public ArrayList<int[]> ZTRois;
-	public HashMap<Integer, ArrayList<BCellobject>> CSVInfoFile = new HashMap<Integer, ArrayList<BCellobject>>();
+	public HashMap<Integer, ArrayList<Cellobject>> CSVInfoFile = new HashMap<Integer, ArrayList<Cellobject>>();
 	public MouseMotionListener ml;
 	public ImageJ ij;
 	public double calibrationX;
@@ -164,7 +164,7 @@ public class InteractiveAnalysis extends JPanel implements PlugIn {
 	// Input Image and one flourescent channel and mask images
 	public InteractiveAnalysis(final RandomAccessibleInterval<FloatType> originalimg,
 			final RandomAccessibleInterval<IntType> Segoriginalimg,
-			final HashMap<Integer,ArrayList<BCellobject>> CSVInfoFile,
+			final HashMap<Integer,ArrayList<Cellobject>> CSVInfoFile,
 			final File defaultDirectory, final String NameA, final double calibrationX,
 			final double calibrationY, final double timecal, String inputstring, final Boolean TrackMate, final Boolean FilamentMode) {
 
