@@ -11,6 +11,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+
+import budDetector.Budregionobject;
 import kalmanGUI.CovistoKalmanPanel;
 import net.imagej.ops.OpService;
 import net.imglib2.Cursor;
@@ -40,37 +42,36 @@ import ij.IJ;
 import skeletor.*;
 import ij.gui.OvalRoi;
 
-public class TrackEachBud {
+public class FilamentEnder {
 
 
 	final InteractiveAnalysis parent;
 	final int maxlabel;
 	int percent;
-	final ArrayList<BCellobject> Budcelllist;
     ArrayList<Cellobject> celllist = new ArrayList<Cellobject>();
 
-	public TrackEachBud(final InteractiveAnalysis parent, 
-			 ArrayList<BCellobject> Budcelllist,final int maxlabel,
+	public FilamentEnder(final InteractiveAnalysis parent, 
+			 ArrayList<Cellobject> celllist,final int maxlabel,
 			final int percent) {
 
 		this.parent = parent;
 		this.maxlabel = maxlabel;
 		this.percent = percent;
 
-        this.Budcelllist = Budcelllist;
+        this.celllist = celllist;
 	}
 	
 	
 
 	
-    public ArrayList<BCellobject> returnBCellobjectlist(){
+    public ArrayList<Cellobject> returnBCellobjectlist(){
 		
 		
-		return Budcelllist;
+		return celllist;
 	}
 	
 	
-	public void displayBuds() {
+	public void displays() {
 
 		
 		
@@ -92,7 +93,7 @@ public class TrackEachBud {
 				ArrayList<Roiobject> rejrois = new ArrayList<Roiobject>();
 				// Input the integer image of bud with the label and output the binary border
 				// for that label
-				Regionobject PairCurrentViewBit = BudCurrentLabelBinaryImage(
+				Regionobject PairCurrentViewBit = CurrentLabelBinaryImage(
 						parent.CurrentViewInt, label);
 
 				// For each bud get the list of points
@@ -129,25 +130,25 @@ public class TrackEachBud {
 							"Computing Filament Ends = " + parent.thirdDimension + "/" + parent.thirdDimensionSize + " Total Filaments = "
 									+ (parent.pixellist.size() ));
 				// If we did not compute the skeletons before we compute it for each label
-				if(parent.BudOvalRois.get(uniqueID)==null) {
+				if(parent.OvalRois.get(uniqueID)==null) {
 				    
 					
 					
 					List<RealLocalizable> currentskel = SkeletonCreator(PairCurrentViewBit, truths);
-					currentrois = DisplayListOverlay.SkeletonEndDisplay(parent, currentskel, label, parent.BudColor);
+					currentrois = DisplayListOverlay.SkeletonEndDisplay(parent, currentskel, label, parent.Color);
 					FillArrays(currentskel,truths, currentpoint, label);
 					
 				}
 				
 				// If we have a pre-computation/manual marked skeleton point we load it for the current label
-				if (parent.BudOvalRois.get(uniqueID)!=null){
+				if (parent.OvalRois.get(uniqueID)!=null){
 					
-							ArrayList<Roiobject> rois = 	parent.BudOvalRois.get(uniqueID);
+							ArrayList<Roiobject> rois = 	parent.OvalRois.get(uniqueID);
 							List<RealLocalizable> currentskel = new ArrayList<RealLocalizable>();
 							List<RealLocalizable> rejskel = new ArrayList<RealLocalizable>();
 							for (Roiobject currentroi: rois) {
 								
-								if(currentroi.color == parent.BudColor && currentroi.Label == label) {
+								if(currentroi.color == parent.Color && currentroi.Label == label) {
 									
 									double LocationX = currentroi.point.getDoublePosition(0);
 									double LocationY = currentroi.point.getDoublePosition(1);
@@ -158,7 +159,7 @@ public class TrackEachBud {
 								
 							}
 								
-	                       if(currentroi.color == parent.RemoveBudColor && currentroi.Label == label  ) {
+	                       if(currentroi.color == parent.RemoveColor && currentroi.Label == label  ) {
 									
 									double LocationX = currentroi.point.getDoublePosition(0);
 									double LocationY = currentroi.point.getDoublePosition(1);
@@ -171,8 +172,8 @@ public class TrackEachBud {
 								
 							}
 							
-							currentrois = DisplayListOverlay.SkeletonEndDisplay(parent, currentskel, label, parent.BudColor);
-							rejrois = DisplayListOverlay.SkeletonEndDisplay(parent, rejskel, label, parent.RemoveBudColor);
+							currentrois = DisplayListOverlay.SkeletonEndDisplay(parent, currentskel, label, parent.Color);
+							rejrois = DisplayListOverlay.SkeletonEndDisplay(parent, rejskel, label, parent.RemoveColor);
 
 							currentskel.addAll(rejskel);
 							FillArrays(currentskel,truths, currentpoint, label);
@@ -187,7 +188,7 @@ public class TrackEachBud {
 		}
 	
 		 
-			parent.BudOvalRois.put(uniqueID, Allrois);
+			parent.OvalRois.put(uniqueID, Allrois);
 
 			parent.imp.updateAndDraw();
 	
@@ -221,32 +222,17 @@ public class TrackEachBud {
 		
 		for (RealLocalizable budpoints : skeletonEndPoints) {
 
-			Budpointobject Budpoint = new Budpointobject(centerpoint, truths, skeletonEndPoints,
+			pointobject point = new pointobject(centerpoint, truths, skeletonEndPoints,
 					truths.size() * parent.calibrationX, label,
 					new double[] { budpoints.getDoublePosition(0), budpoints.getDoublePosition(1) },
 					parent.thirdDimension, 0);
 
-			Budpointlist.add(Budpoint);
+			pointlist.add(point);
 
 		}
-		Budobject Curreentbud = new Budobject(centerpoint, truths, skeletonEndPoints, parent.thirdDimension, label,
-				truths.size() * parent.calibrationX);
-		Budlist.add(Curreentbud);
-		if (parent.Segoriginalimg != null) {
+	
 	          celllist = GetNearest.getAllInteriorCells(parent, parent.CurrentViewInt);
 
-	          // check over this point later
-		//ArrayList<Cellobject> budcelllist = GetNearest.getLabelInteriorCells(parent, CurrentViewInt, celllist, Curreentbud, label);
-		for(Cellobject currentbudcell:celllist) {
-			
-			BCellobject budncell = new BCellobject(currentbudcell, parent.thirdDimension);
-            parent.cells.add(budncell, parent.thirdDimension);  
-		}
-		
-		
-		}
-		
-		
 		
 	}
 
@@ -331,7 +317,7 @@ public class TrackEachBud {
 		return gradientimg;
 	}
 
-	public static Regionobject BudCurrentLabelBinaryImage(
+	public static Regionobject CurrentLabelBinaryImage(
 			RandomAccessibleInterval<IntType> Intimg, int currentLabel) {
 		int n = Intimg.numDimensions();
 		long[] position = new long[n];
@@ -379,8 +365,7 @@ public class TrackEachBud {
 		return region;
 
 	}
-	
-	public static Pair<Regionobject,Regionobject> CurrentLabelBinaryImage(
+	public static Pair<Regionobject,Regionobject> DualCurrentLabelBinaryImage(
 			RandomAccessibleInterval<IntType> Intimg, int currentLabel) {
 		int n = Intimg.numDimensions();
 		long[] position = new long[n];
@@ -391,8 +376,8 @@ public class TrackEachBud {
 
 		// Go through the whole image and add every pixel, that belongs to
 		// the currently processed label
-		long[] minVal = { Intimg.max(0), Intimg.max(1)};
-		long[] maxVal = { Intimg.min(0), Intimg.min(1)};
+		long[] minVal = { Intimg.max(0), Intimg.max(1), Intimg.max(2) };
+		long[] maxVal = { Intimg.min(0), Intimg.min(1),Intimg.min(2) };
 
 		while (intCursor.hasNext()) {
 			intCursor.fwd();
@@ -424,65 +409,11 @@ public class TrackEachBud {
 		// Gradient image gives us the bondary points
 		RandomAccessibleInterval<BitType> smallgradimg = GradientmagnitudeImage(smalloutimg);
 		RandomAccessibleInterval<BitType> gradimg = GradientmagnitudeImage(outimg);
-		Regionobject smallregion = new Regionobject(smallgradimg, smalloutimg, min,  size);
-		Regionobject region = new Regionobject(gradimg, outimg, min,  size);
-		return new ValuePair<Regionobject, Regionobject>( smallregion, region);
+		Budregionobject smallregion = new Budregionobject(smallgradimg, smalloutimg, min,  size);
+		Budregionobject region = new Budregionobject(gradimg, outimg, min,  size);
+		return new ValuePair<Budregionobject, Budregionobject>( smallregion, region);
 
 	}
-	public static Regionobject YellowCurrentLabelBinaryImage(
-			RandomAccessibleInterval<IntType> Intimg, int currentLabel) {
-		int n = Intimg.numDimensions();
-		long[] position = new long[n];
-		Cursor<IntType> intCursor = Views.iterable(Intimg).cursor();
-
-		RandomAccessibleInterval<BitType> outimg = new ArrayImgFactory<BitType>().create(Intimg, new BitType());
-		RandomAccess<BitType> imageRA = outimg.randomAccess();
-
-		// Go through the whole image and add every pixel, that belongs to
-		// the currently processed label
-		long[] minVal = { Intimg.max(0), Intimg.max(1) };
-		long[] maxVal = { Intimg.min(0), Intimg.min(1) };
-
-		while (intCursor.hasNext()) {
-			intCursor.fwd();
-			imageRA.setPosition(intCursor);
-			int i = intCursor.get().get();
-			if (i == currentLabel) {
-
-				intCursor.localize(position);
-				for (int d = 0; d < n; ++d) {
-					if (position[d] < minVal[d]) {
-						minVal[d] = position[d];
-					}
-					if (position[d] > maxVal[d]) {
-						maxVal[d] = position[d];
-					}
-
-				}
-
-				imageRA.get().setOne();
-			} else
-				imageRA.get().setZero();
-
-		}
-		
-		double size = Math.sqrt(Distance.DistanceSq(minVal, maxVal));
-		for (int d = 0; d < n; ++d) {
-			
-			minVal[d] = minVal[d] - 10;
-			maxVal[d] = maxVal[d] + 10;
-			
-		}
 	
-		Point min = new Point(minVal);
-		outimg = Views.offsetInterval(outimg, minVal, maxVal);
-		// Gradient image gives us the bondary points
-		RandomAccessibleInterval<BitType> gradimg = GradientmagnitudeImage(outimg);
-		
-		Regionobject region = new Regionobject(gradimg, outimg, min,  size);
-		return region;
-
-	}
-
 
 }

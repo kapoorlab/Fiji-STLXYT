@@ -44,8 +44,8 @@ public class ObjectMaker implements Runnable {
 		
 		if(parent.FilamentMode == false) {
 		
-		Pair<Regionobject, Regionobject> SmallBigPairCurrentViewBit = TrackEachBud
-				.CurrentLabelBinaryImage(Seg, label);
+		Pair<Regionobject, Regionobject> SmallBigPairCurrentViewBit = FilamentEnder
+				.DualCurrentLabelBinaryImage(Seg, label);
 		
 		// For
 		List<RealLocalizable> bordercelltruths = DisplayListOverlay.GetCoordinatesBit(SmallBigPairCurrentViewBit.getB().Boundaryimage);
@@ -53,7 +53,7 @@ public class ObjectMaker implements Runnable {
 		double cellPerimeter = Volume(SmallBigPairCurrentViewBit.getA().Boundaryimage);
 		Localizable cellcenterpoint = Listordering.getIntMean3DCord(bordercelltruths);
 		double intensity = getIntensity(parent, SmallBigPairCurrentViewBit.getA().Interiorimage);
-		double[] Extents = radiusXYZ( SmallBigPairCurrentViewBit.getA().Boundaryimage);
+		double[] Extents = radiusXY( SmallBigPairCurrentViewBit.getA().Boundaryimage);
 		
 		
 		Cellobject insideGreencells = new Cellobject(cellcenterpoint, parent.thirdDimension, label, intensity, cellArea, cellPerimeter, Extents); 

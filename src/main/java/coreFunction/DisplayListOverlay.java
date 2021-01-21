@@ -4,24 +4,15 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-import budDetector.Distance;
-import budDetector.Roiobject;
-import ij.IJ;
-import ij.gui.Arrow;
-import ij.gui.Line;
 import ij.gui.OvalRoi;
 import net.imglib2.Cursor;
-import net.imglib2.Point;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
-import net.imglib2.type.NativeType;
 import net.imglib2.type.logic.BitType;
-import net.imglib2.type.numeric.real.FloatType;
-import net.imglib2.util.Pair;
-import net.imglib2.util.ValuePair;
 import net.imglib2.view.Views;
-import pluginTools.InteractiveBud;
+import pluginTools.InteractiveAnalysis;
+import tracking.Roiobject;
 
 public class DisplayListOverlay {
 
@@ -60,7 +51,7 @@ public class DisplayListOverlay {
 	
 
 
-	public static void BoundaryCenterDisplay(InteractiveBud parent, List<RealLocalizable> truths, RealLocalizable currentpoint) {
+	public static void BoundaryCenterDisplay(InteractiveAnalysis parent, List<RealLocalizable> truths, RealLocalizable currentpoint) {
 		
 		
 		Color displayColor; 
@@ -82,14 +73,14 @@ public class DisplayListOverlay {
 		}
 
 		OvalRoi oval = new OvalRoi((int) currentpoint.getDoublePosition(0), (int) currentpoint.getDoublePosition(1),
-				parent.BudDotsize, parent.BudDotsize);
-		oval.setStrokeWidth(parent.BudDotsize);
+				parent.Dotsize, parent.Dotsize);
+		oval.setStrokeWidth(parent.Dotsize);
 		oval.setStrokeColor(displayColor);
 		parent.overlay.add(oval);
 		parent.imp.updateAndDraw();
 	}
 	
-	public static ArrayList<Roiobject> SkeletonEndDisplay(InteractiveBud parent, List<RealLocalizable> skeletonEndPoints, int label, Color color) {
+	public static ArrayList<Roiobject> SkeletonEndDisplay(InteractiveAnalysis parent, List<RealLocalizable> skeletonEndPoints, int label, Color color) {
 		
 		
 		 ArrayList<Roiobject> Allrois = new ArrayList<Roiobject>();
@@ -99,9 +90,9 @@ public class DisplayListOverlay {
 				double Y = Math.round(skeletonEndPoints.get(i).getFloatPosition(1));
 				
 				OvalRoi points =  new OvalRoi((int) X, (int) Y,
-						parent.BudDotsize, parent.BudDotsize);
+						parent.Dotsize, parent.Dotsize);
 				points.setStrokeColor(color);
-				points.setStrokeWidth(parent.BudDotsize);
+				points.setStrokeWidth(parent.Dotsize);
 				parent.overlay.add(points);
 				Roiobject roicolor = new Roiobject(color, points, new RealPoint(new double[] {X,Y}), label);
 		        		Allrois.add(roicolor);
