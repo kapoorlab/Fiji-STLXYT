@@ -7,7 +7,7 @@ import pluginTools.InteractiveAnalysis;
 import tracking.BCellobject;
 import tracking.Cellobject;
 
-public class ParallelLabel implements Runnable {
+public class ParallelLabel  {
 
 	final InteractiveAnalysis parent;
 	ArrayList<Cellobject> Currentcelllist;
@@ -25,7 +25,7 @@ public class ParallelLabel implements Runnable {
 	}
 	
 	
-	@Override
+	
 	public void run() {
 		  
 	
@@ -36,7 +36,7 @@ public class ParallelLabel implements Runnable {
 			e.printStackTrace();
 		}
 	      
-		
+		System.out.println("Totalpoints" + Currentcelllist.size());
      	for(Cellobject currentbudcell:Currentcelllist) {
 			
      		

@@ -16,6 +16,7 @@ import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
 import net.imglib2.img.array.ArrayImgFactory;
+import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.logic.BitType;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.util.Pair;
@@ -30,12 +31,14 @@ public class FilamentEnder {
 
 
 	final InteractiveAnalysis parent;
-	int label;
+	final RandomAccessibleInterval<BitType> BinaryImage;
+	final int label;
 
 	public FilamentEnder(final InteractiveAnalysis parent, 
-			final int label) {
+			final RandomAccessibleInterval<BitType> BinaryImage, final int label) {
 
 		this.parent = parent;
+        this.BinaryImage = BinaryImage;
         this.label = label;
 	}
 	
@@ -49,19 +52,15 @@ public class FilamentEnder {
 		ArrayList<Roiobject> Allrois = new ArrayList<Roiobject>();
 		String uniqueID = Integer.toString(parent.thirdDimension);
 		
-		Pair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>>  currentskel = new ValuePair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>>(null, null);
 
-				
+		
 				ArrayList<Roiobject> currentrois = new ArrayList<Roiobject>();
-				ArrayList<Roiobject> rejrois = new ArrayList<Roiobject>();
 				// Input the integer image of bud with the label and output the binary border
 				// for that label
-				Regionobject PairCurrentViewBit = CurrentLabelBinaryImage(
-						parent.CurrentViewInt, label);
+			
 
 				// For each bud get the list of points
-				List<RealLocalizable> truths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Boundaryimage);
-				List<RealLocalizable> bodytruths = DisplayListOverlay.GetCoordinatesBit(PairCurrentViewBit.Interiorimage);
+				List<RealLocalizable> bodytruths = DisplayListOverlay.GetCoordinatesBit(BinaryImage);
 				
 				Comparator<RealLocalizable> comp = new Comparator<RealLocalizable>() {
 
@@ -83,61 +82,19 @@ public class FilamentEnder {
 					};
 				
 				
-				 Collections.sort(truths,comp);
 					 Collections.sort(bodytruths,comp);
 				// Get the center point of each bud
 			
 				// If we did not compute the skeletons before we compute it for each label
-				if(parent.OvalRois.get(uniqueID)==null) {
 				    
 					
 					// End and split points
-					currentskel = SkeletonCreator(PairCurrentViewBit, truths);
+					 Pair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>>  currentskel = SkeletonCreator(BinaryImage);
 					currentrois = DisplayListOverlay.SkeletonEndDisplay(parent, currentskel.getA(), label, parent.Color);
 					
-				}
 				
 				// If we have a pre-computation/manual marked skeleton point we load it for the current label
-				if (parent.OvalRois.get(uniqueID)!=null){
-					
-							ArrayList<Roiobject> rois = 	parent.OvalRois.get(uniqueID);
-							ArrayList<RealLocalizable> currentskelA = new ArrayList<RealLocalizable>();
-							ArrayList<RealLocalizable> rejskel = new ArrayList<RealLocalizable>();
-							for (Roiobject currentroi: rois) {
-								
-								if(currentroi.color == parent.Color && currentroi.Label == label) {
-									
-									double LocationX = currentroi.point.getDoublePosition(0);
-									double LocationY = currentroi.point.getDoublePosition(1);
-									
-								RealPoint point = new RealPoint(new double[] {LocationX, LocationY});
-								
-								currentskelA.add(point);
-								
-							}
-								
-	                       if(currentroi.color == parent.RemoveColor && currentroi.Label == label  ) {
-									
-									double LocationX = currentroi.point.getDoublePosition(0);
-									double LocationY = currentroi.point.getDoublePosition(1);
-									
-								RealPoint point = new RealPoint(new double[] {LocationX, LocationY});
-								
-								rejskel.add(point);
-								
-							}
-								
-							}
-							
-							currentrois = DisplayListOverlay.SkeletonEndDisplay(parent, currentskelA, label, parent.Color);
-							rejrois = DisplayListOverlay.SkeletonEndDisplay(parent, rejskel, label, parent.RemoveColor);
-
-							currentskelA.addAll(rejskel);
-							
-							currentskel = new ValuePair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>>(currentskelA, null);
-				 }
-				 
-				 currentrois.addAll(rejrois);
+			
 				
 				 Allrois.addAll(currentrois);
 				 
@@ -159,18 +116,17 @@ public class FilamentEnder {
 	
 
 	
-	public Pair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>> SkeletonCreator(Regionobject  PairCurrentViewBit, List<RealLocalizable> truths) {
+	public Pair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>> SkeletonCreator(RandomAccessibleInterval<BitType> BinaryImage) {
 		
 		
 		// Skeletonize Filaments
 		OpService ops = parent.ij.op();
 		
-		SkeletonCreator<BitType> skelmake = new SkeletonCreator<BitType>(PairCurrentViewBit.Interiorimage, ops);
+		SkeletonCreator<BitType> skelmake = new SkeletonCreator<BitType>(BinaryImage, ops);
 		skelmake.setClosingRadius(0);
 		skelmake.run();
 		ArrayList<RandomAccessibleInterval<BitType>> Allskeletons = skelmake.getSkeletons();
-
-		Pair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>> skeletontEndSplitPoints  = AnalyzeSkeleton(Allskeletons,truths, ops);
+		Pair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>> skeletontEndSplitPoints  = AnalyzeSkeleton(Allskeletons, ops);
 		
 		return skeletontEndSplitPoints;
 		
@@ -180,7 +136,7 @@ public class FilamentEnder {
 
 
 
-	public static Pair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>> AnalyzeSkeleton(ArrayList<RandomAccessibleInterval<BitType>> Allskeletons, List<RealLocalizable> truths,
+	public static Pair<ArrayList<RealLocalizable>, ArrayList<RealLocalizable>> AnalyzeSkeleton(ArrayList<RandomAccessibleInterval<BitType>> Allskeletons, 
 			OpService ops) {
 
 		ArrayList<RealLocalizable> endPoints = new ArrayList<RealLocalizable>();
@@ -193,7 +149,6 @@ public class FilamentEnder {
 			RandomAccessibleInterval<BitType> Ends = skelanalyze.getEndpoints();
 			RandomAccessibleInterval<BitType> Splits = skelanalyze.getBranchpoints();
 
-			
 			Cursor<BitType> skelcursor = Views.iterable(Ends).localizingCursor();
 			while (skelcursor.hasNext()) {
 
@@ -229,7 +184,7 @@ public class FilamentEnder {
 		
 		ArrayList<RealLocalizable> farPoints = new ArrayList<RealLocalizable>(endPoints);
 		
-		
+		if (endPoints.size() > 1) {
 		for(RealLocalizable addPoint:endPoints) {
 			
 			
@@ -245,7 +200,7 @@ public class FilamentEnder {
 				farPoints.remove(closestdynamicskel);
 				
 		}
-		
+		}
 
 		return farPoints;
 		
@@ -388,7 +343,7 @@ public class FilamentEnder {
 	    RandomAccessibleInterval<BitType> smalloutimg = Views.interval(outimg, minVal, maxVal);
 		Point min = new Point(minVal.length);
 		// Gradient image gives us the bondary points
-		RandomAccessibleInterval<BitType> smallgradimg = GradientmagnitudeImage(smalloutimg);
+		RandomAccessibleInterval<BitType> smallgradimg = GradientmagnitudeImage(outimg);
 		RandomAccessibleInterval<BitType> gradimg = GradientmagnitudeImage(outimg);
 		Regionobject smallregion = new Regionobject(smallgradimg, smalloutimg, min,  size);
 		Regionobject region = new Regionobject(gradimg, outimg, min,  size);

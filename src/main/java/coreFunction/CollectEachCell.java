@@ -52,27 +52,13 @@ public class CollectEachCell  implements Runnable {
 			
 			parent.overlay.clear();
 
-			int nThreads = Runtime.getRuntime().availableProcessors();
-			// set up executor service
-			final ExecutorService taskExecutor = Executors.newFixedThreadPool(nThreads);
-			List<Callable<Object>> tasks = new ArrayList<Callable<Object>>();
-					// For each bud get the list of points
-
 												// For each bud get the list of points
 												if (parent.jpb != null)
 													LabPluginutility.ProgressBar.SetProgressBar(parent.jpb,
 															100 * (percent) / (parent.thirdDimensionSize + parent.pixellist.size()),
 															"Runnint at T = " + parent.thirdDimension + "/" + parent.thirdDimensionSize );
-
-												tasks.add(Executors.callable(new ParallelLabel(parent, Celllist,  uniqueID)));
-		try {
-				
-				taskExecutor.invokeAll(tasks);
-		
-		} catch (InterruptedException e1) {
-
-			
-		}
+                  ParallelLabel Timerun = new ParallelLabel(parent, Celllist,  uniqueID);
+                  Timerun.run();
 
 		}
 		
