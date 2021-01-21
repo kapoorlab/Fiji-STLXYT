@@ -24,6 +24,9 @@ public class GoNoTMListener implements ItemListener {
 			
 			parent.DoTrackMate = false;
 		    parent.DoNotTrackMate = true;
+			parent.FilamentTrackMate = false;
+		    parent.NotFilamentTrackMate = false;
+		    
 		}
 		
 	
@@ -34,6 +37,7 @@ if (e.getStateChange() == ItemEvent.DESELECTED) {
 		parent.DoNotTrackMate = false;
 	
 	}
+
 	}
 
 }

@@ -21,17 +21,15 @@ public class GoFilamentListener implements ItemListener {
 			
 		if (e.getStateChange() == ItemEvent.SELECTED) {
 			
-				
+
+			    parent.DoTrackMate = true;
+		        parent.DoNotTrackMate = false;
 				parent.FilamentTrackMate = true;
 			    parent.NotFilamentTrackMate = false;
 			}
-		if (e.getStateChange() == ItemEvent.SELECTED) {
-			
-			
-			parent.FilamentTrackMate = false;
-		    parent.NotFilamentTrackMate = true;
-		}
-			
+		
+		
+		
 		}
 
 	}

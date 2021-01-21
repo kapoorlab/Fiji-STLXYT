@@ -21,16 +21,12 @@ public class GoCellListener implements ItemListener {
 			
 		if (e.getStateChange() == ItemEvent.SELECTED) {
 			
-				
+
+			    parent.DoTrackMate = true;
+		        parent.DoNotTrackMate = false;
 				parent.FilamentTrackMate = false;
 			    parent.NotFilamentTrackMate = true;
 			}
-		if (e.getStateChange() == ItemEvent.SELECTED) {
-			
-			
-			parent.FilamentTrackMate = true;
-		    parent.NotFilamentTrackMate = false;
-		}
 			
 		}
 

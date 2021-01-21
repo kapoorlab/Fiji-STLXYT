@@ -93,8 +93,6 @@ public class FileChooser extends JPanel {
 	public String chooseTMstring = "TrackMate or Non TrackMate Analysis";
 	public Border chooseTM = new CompoundBorder(new TitledBorder(chooseTMstring), new EmptyBorder(c.insets));
 	
-	public String chooseFilamentstring = "Filament/Rod or Cell Analysis";
-	public Border chooseFilament = new CompoundBorder(new TitledBorder(chooseFilamentstring), new EmptyBorder(c.insets));
 	
 	public String chooseMaskSegstring = "Segmentation for Cells and  Mask";
 	public Border chooseMaskSeg = new CompoundBorder(new TitledBorder(chooseMaskSegstring), new EmptyBorder(c.insets));
@@ -142,12 +140,10 @@ public class FileChooser extends JPanel {
 	public Checkbox MaskMode = new Checkbox("With Mask", DoMask, cellmode);
 
 	public CheckboxGroup trackmatemode = new CheckboxGroup();
-	public Checkbox TrackMateMode = new Checkbox("TrackMate Style Analysis", DoTrackMate, trackmatemode);
 	public Checkbox NonTrackMateMode = new Checkbox("Other Lab Specific Analysis", DoNotTrackMate, trackmatemode);
 	
-	public CheckboxGroup filamentmode = new CheckboxGroup();
-	public Checkbox FilamentTrackMateMode = new Checkbox("BTrackMate for Filaments", FilamentTrackMate, filamentmode);
-	public Checkbox NonFilamentTrackMateMode = new Checkbox("BTrackMate for Cells", NotFilamentTrackMate, filamentmode);
+	public Checkbox FilamentTrackMateMode = new Checkbox("BTrackMate for Filaments", FilamentTrackMate, trackmatemode);
+	public Checkbox NonFilamentTrackMateMode = new Checkbox("BTrackMate for Cells", NotFilamentTrackMate, trackmatemode);
 	
 	public FileChooser() {
 
@@ -195,8 +191,12 @@ public class FileChooser extends JPanel {
 
 		Panelfileoriginal = original.SingleChannelOption();
 
-		PanelTM.add(TrackMateMode, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+		PanelTM.add(FilamentTrackMateMode, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
+
+		PanelTM.add(NonFilamentTrackMateMode, new GridBagConstraints(0, 1, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.HORIZONTAL, insets, 0, 0));
+		
 		PanelTM.add(NonTrackMateMode, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 		PanelTM.setBorder(chooseTM);
@@ -204,15 +204,6 @@ public class FileChooser extends JPanel {
 		panelFirst.add(PanelTM, new GridBagConstraints(0, 1, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 		
-		
-		PanelFilament.add(FilamentTrackMateMode, new GridBagConstraints(0, 1, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
-				GridBagConstraints.HORIZONTAL, insets, 0, 0));
-		PanelFilament.add(NonFilamentTrackMateMode, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
-				GridBagConstraints.HORIZONTAL, insets, 0, 0));
-		PanelFilament.setBorder(chooseFilament);
-		
-		panelFirst.add(PanelFilament, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
-				GridBagConstraints.HORIZONTAL, insets, 0, 0));
 		
 		panelFirst.add(Panelfileoriginal, new GridBagConstraints(0, 3, 3, 1, 0.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, insets, 0, 0));
@@ -278,7 +269,6 @@ public class FileChooser extends JPanel {
 		FreeMode.addItemListener(new GoFreeFLListener(this));
 		MaskMode.addItemListener(new GoMaskFLListener(this));
 		
-		TrackMateMode.addItemListener(new GoTMListener(this));
 		NonTrackMateMode.addItemListener(new GoNoTMListener(this));
 		
 		FilamentTrackMateMode.addItemListener(new GoFilamentListener(this));
